@@ -168,28 +168,22 @@ export function LandCoverSegmentation() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Hero Header */}
-      <section className="hero-compact border-2 border-black bg-white relative overflow-hidden flex flex-col justify-between">
-        <span
-          aria-hidden="true"
-          className="index absolute right-4 top-2 text-[#E5E7EB] pointer-events-none select-none"
-        >
-          06
-        </span>
-
+      <section className="tile rounded-3xl bg-white p-8 shadow-sm border border-black/[0.04] relative overflow-hidden flex flex-col justify-between">
         <div className="relative z-10">
-          <div className="text-[11px] font-mono font-bold tracking-wider text-[#4B5563] uppercase mb-3">
-            ENVIRONMENTAL UNET · 6-CLASS SEMANTIC SEGMENTATION · 10M NADIR
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--canvas)] text-[var(--ink)] text-xs font-semibold mb-3">
+            <span className="w-2 h-2 rounded-full bg-[var(--blue)] animate-pulse" aria-hidden="true" />
+            <span>SEMANTIC SEGMENTATION ENGINE</span>
+            <span aria-hidden="true">·</span>
+            <span className="text-[var(--text-muted)]">ENVIRONMENTAL UNET · 10M NADIR</span>
           </div>
 
-          <h1 className="display mb-4 text-black">
-            <span className="outline">LAND COVER</span>
-            <br />
-            SEGMENTATION
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--ink)] mb-3">
+            Land Cover Segmentation
           </h1>
 
-          <p className="lead mb-6 text-[#4B5563]">
+          <p className="text-[var(--text-muted)] text-sm sm:text-base max-w-xl font-normal leading-relaxed mb-6">
             Classify multispectral satellite imagery into Dense Vegetation, Sparse Vegetation, Built-Up,
             Water Bodies, Bare Soil, and Agriculture.
           </p>
@@ -198,7 +192,7 @@ export function LandCoverSegmentation() {
             type="button"
             disabled={running}
             onClick={() => void handleRunSegmentation()}
-            className="button-sm bg-black text-white hover:bg-white hover:text-black disabled:opacity-50"
+            className="button-signal rounded-full px-5 py-2.5 text-xs font-semibold disabled:opacity-50"
           >
             {running ? (
               <RefreshCw className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
@@ -211,11 +205,11 @@ export function LandCoverSegmentation() {
       </section>
 
       {/* Fallback Notice */}
-      <div className="border-2 border-black bg-white p-4 flex items-start gap-3 shadow-[4px_4px_0px_#000]">
-        <AlertTriangle className="w-5 h-5 text-[#FF0000] shrink-0 mt-0.5" aria-hidden="true" />
-        <div className="text-xs text-black">
-          <span className="font-black uppercase tracking-wider">DEMO SEGMENTATION MODE: </span>
-          <span className="text-[#4B5563]">
+      <div className="tile p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 shadow-xs flex items-start gap-3">
+        <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" aria-hidden="true" />
+        <div className="text-xs text-[var(--ink)]">
+          <span className="font-bold">DEMO SEGMENTATION MODE: </span>
+          <span className="text-[var(--text-muted)]">
             {seg?.weightsStatus ??
               'Trained PyTorch EnvironmentalUNet weights (.pt) are optional; displaying deterministic pixel-aligned spectral classification overlay.'}
           </span>
@@ -224,11 +218,11 @@ export function LandCoverSegmentation() {
 
       {/* Main Split: Interactive Satellite Scene + Overlay Controls */}
       <section className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        <div className="xl:col-span-8 border-2 border-black bg-white overflow-hidden flex flex-col">
+        <div className="xl:col-span-8 tile rounded-3xl bg-white p-0 shadow-sm border border-black/[0.04] overflow-hidden flex flex-col">
           {/* Viewer Controls */}
-          <div className="px-6 py-3.5 bg-black text-white flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider">
-              <Layers className="w-4 h-4 text-white" aria-hidden="true" />
+          <div className="px-6 py-3.5 bg-white border-b border-black/[0.06] flex flex-wrap items-center justify-between gap-3 text-[var(--ink)]">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--ink)]">
+              <Layers className="w-4 h-4 text-[var(--blue)]" aria-hidden="true" />
               <span>{scene.caption}</span>
             </div>
 
@@ -236,8 +230,8 @@ export function LandCoverSegmentation() {
               <button
                 type="button"
                 onClick={() => setShowOverlay((v) => !v)}
-                className={`button-sm !py-1 !px-3 text-[11px] ${
-                  showOverlay ? 'bg-white text-black' : 'border-white text-white'
+                className={`button-sm !py-1 !px-3 text-xs rounded-full ${
+                  showOverlay ? 'bg-[var(--ink)] text-white' : 'button-secondary'
                 }`}
               >
                 <Eye className="w-3.5 h-3.5 mr-1" aria-hidden="true" />
@@ -253,7 +247,7 @@ export function LandCoverSegmentation() {
                   max={100}
                   value={opacity}
                   onChange={(e) => setOpacity(Number(e.target.value))}
-                  className="w-24 accent-white cursor-pointer"
+                  className="w-24 accent-[var(--blue)] cursor-pointer"
                 />
                 <span className="w-8 text-right tabular-nums">{opacity}%</span>
               </div>
@@ -283,17 +277,17 @@ export function LandCoverSegmentation() {
               className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-none"
               style={{ opacity: showOverlay ? opacity / 100 : 0 }}
             />
-            <div className="absolute bottom-4 left-4 bg-white border-2 border-black px-3 py-1.5 text-[11px] font-mono font-bold text-black shadow-[3px_3px_0px_#000]">
+            <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md border border-black/[0.08] px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-[var(--ink)] shadow-md">
               PROBE: {hoveredClass}
             </div>
           </div>
 
           {/* Classification Legend */}
-          <div className="px-6 py-4 border-t-2 border-black bg-white flex flex-wrap items-center gap-x-6 gap-y-2">
+          <div className="px-6 py-4 border-t border-black/[0.06] bg-white flex flex-wrap items-center gap-x-6 gap-y-2">
             {Object.entries(CLASS_PALETTE).map(([id, item]) => (
-              <div key={id} className="flex items-center gap-2 text-xs font-black uppercase text-black">
+              <div key={id} className="flex items-center gap-2 text-xs font-medium text-[var(--ink)]">
                 <span
-                  className="w-3.5 h-3.5 border border-black shrink-0"
+                  className="w-3 h-3 rounded-full shrink-0"
                   style={{ backgroundColor: item.hex }}
                   aria-hidden="true"
                 />
@@ -303,14 +297,14 @@ export function LandCoverSegmentation() {
           </div>
         </div>
 
-        {/* Area-Wise Statistics */}
-        <div className="xl:col-span-4 border-2 border-black bg-white p-6 flex flex-col justify-between gap-6">
+        {/* Area-Wise Statistics Bento Card */}
+        <div className="xl:col-span-4 tile rounded-3xl bg-white p-6 shadow-sm border border-black/[0.04] flex flex-col justify-between gap-6">
           <div className="space-y-5">
-            <div className="border-b-2 border-black pb-3">
-              <div className="text-[10px] font-mono font-bold uppercase text-[#4B5563]">
+            <div className="border-b border-black/[0.06] pb-3">
+              <div className="text-[10px] font-mono font-bold uppercase text-[var(--text-muted)]">
                 {seg?.modelArchitecture ?? 'EnvironmentalUNet'}
               </div>
-              <h2 className="mt-1 text-xs font-black uppercase tracking-widest text-black">
+              <h2 className="mt-1 text-sm font-bold tracking-tight text-[var(--ink)]">
                 AREA DISTRIBUTION ({seg?.totalAreaKm2 ?? 0} KM²)
               </h2>
             </div>
@@ -318,22 +312,22 @@ export function LandCoverSegmentation() {
             <div className="space-y-3.5">
               {(seg?.classes ?? []).map((cls) => (
                 <div key={cls.id} className="space-y-1.5">
-                  <div className="flex items-center justify-between text-xs font-bold uppercase">
-                    <span className="flex items-center gap-2">
+                  <div className="flex items-center justify-between text-xs font-semibold">
+                    <span className="flex items-center gap-2 text-[var(--ink)]">
                       <span
-                        className="w-3 h-3 border border-black shrink-0"
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
                         style={{ backgroundColor: cls.color }}
                         aria-hidden="true"
                       />
                       {cls.label}
                     </span>
-                    <span className="font-mono tabular-nums">
+                    <span className="font-mono tabular-nums text-[var(--text-muted)]">
                       {cls.areaKm2} KM² ({cls.percentage}%)
                     </span>
                   </div>
-                  <div className="w-full h-2 bg-[#E5E7EB] border border-black overflow-hidden">
+                  <div className="w-full h-2 bg-[var(--canvas)] rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-black"
+                      className="h-full bg-[var(--blue)] rounded-full"
                       style={{ width: `${Math.min(100, cls.percentage * 1.4)}%` }}
                     />
                   </div>
@@ -342,18 +336,18 @@ export function LandCoverSegmentation() {
             </div>
           </div>
 
-          <div className="pt-4 border-t-2 border-black text-[11px] font-mono font-bold text-black space-y-1.5">
+          <div className="pt-4 border-t border-black/[0.06] text-xs text-[var(--text-muted)] space-y-2">
             <div className="flex justify-between">
               <span>INFERENCE MODE</span>
-              <span className="text-[#FF0000]">DEMO FALLBACK</span>
+              <span className="text-[var(--critical)] font-bold">DEMO FALLBACK</span>
             </div>
             <div className="flex justify-between">
               <span>SPATIAL RESOLUTION</span>
-              <span className="tabular-nums">{seg?.spatialResolutionM ?? 10}M</span>
+              <span className="tabular-nums font-semibold text-[var(--ink)]">{seg?.spatialResolutionM ?? 10}M</span>
             </div>
             <div className="flex justify-between">
               <span>DEMO REFERENCE MIOU</span>
-              <span className="tabular-nums">{seg?.estimatedIoUDemo ?? 0.79}</span>
+              <span className="tabular-nums font-semibold text-[var(--ink)]">{seg?.estimatedIoUDemo ?? 0.79}</span>
             </div>
           </div>
         </div>
@@ -362,45 +356,43 @@ export function LandCoverSegmentation() {
       {/* 5-Year Change & Transition Matrix */}
       {seg && (
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-6 border-2 border-black bg-white p-6">
-            <div className="border-b-2 border-black pb-3 mb-4">
-              <h2 className="text-xs font-black uppercase tracking-widest text-black">
+          <div className="lg:col-span-6 tile rounded-3xl bg-white p-6 shadow-sm border border-black/[0.04]">
+            <div className="border-b border-black/[0.06] pb-3 mb-4">
+              <h2 className="text-sm font-bold tracking-tight text-[var(--ink)]">
                 5-YEAR NET CLASS SHIFT (% OF MUNICIPAL AREA)
               </h2>
-              <p className="text-[10px] font-mono text-[#4B5563] uppercase mt-0.5">
-                POSITIVE VALUES = EXPANSION · NEGATIVE VALUES = CONTRACTION
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                Positive values = Expansion · Negative values = Contraction
               </p>
             </div>
             <div className="h-60">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={seg.classes} margin={{ top: 8, right: 12, left: -16, bottom: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
                   <XAxis
                     dataKey="label"
-                    stroke="#000000"
+                    stroke="#8E8E93"
                     fontSize={10}
-                    fontStyle="bold"
                     interval={0}
                     angle={-15}
                     textAnchor="end"
                     tickFormatter={(v: string) => v.split(' ')[0]}
                   />
-                  <YAxis stroke="#000000" fontSize={10} unit="%" />
+                  <YAxis stroke="#8E8E93" fontSize={10} unit="%" />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#FFFFFF',
-                      borderColor: '#000000',
-                      borderWidth: '2px',
-                      borderRadius: '0px',
-                      fontSize: '11px',
-                      fontWeight: 'bold',
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      borderColor: 'rgba(0, 0, 0, 0.08)',
+                      borderRadius: '1rem',
+                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+                      fontSize: '12px',
                     }}
                   />
-                  <Bar dataKey="fiveYearChangePct" name="5-Year Shift (%)">
+                  <Bar dataKey="fiveYearChangePct" name="5-Year Shift (%)" radius={[6, 6, 0, 0]}>
                     {seg.classes.map((c) => (
                       <Cell
                         key={c.id}
-                        fill={c.fiveYearChangePct >= 0 ? '#000000' : '#FF0000'}
+                        fill={c.fiveYearChangePct >= 0 ? '#007AFF' : '#FF3B30'}
                       />
                     ))}
                   </Bar>
@@ -409,27 +401,27 @@ export function LandCoverSegmentation() {
             </div>
           </div>
 
-          <div className="lg:col-span-6 border-2 border-black bg-white overflow-hidden">
-            <div className="px-6 py-4 border-b-2 border-black bg-black text-white">
-              <h2 className="text-xs font-black uppercase tracking-widest text-white">
+          <div className="lg:col-span-6 tile rounded-3xl bg-white p-6 shadow-sm border border-black/[0.04] overflow-hidden">
+            <div className="pb-3 border-b border-black/[0.06] mb-2">
+              <h2 className="text-sm font-bold tracking-tight text-[var(--ink)]">
                 LAND COVER TRANSITION ANALYSIS
               </h2>
             </div>
-            <div className="divide-y-2 divide-black">
+            <div className="divide-y divide-black/[0.06]">
               {seg.transitions.map((t, idx) => (
                 <div
                   key={idx}
-                  className="px-6 py-4 flex items-start justify-between gap-4 hover:bg-black hover:text-white transition-none group"
+                  className="py-3 px-2 rounded-xl hover:bg-[var(--canvas)] transition-colors flex items-start justify-between gap-4"
                 >
                   <div>
-                    <div className="text-xs font-black uppercase tracking-tight">
+                    <div className="text-xs font-bold text-[var(--ink)]">
                       {t.fromClass} → {t.toClass}
                     </div>
-                    <div className="text-[11px] text-[#4B5563] group-hover:text-[#D1D5DB] mt-0.5">
+                    <div className="text-[11px] text-[var(--text-muted)] mt-0.5">
                       {t.driver}
                     </div>
                   </div>
-                  <span className="font-mono text-xs font-black text-[#FF0000] group-hover:text-[#FF0000] tabular-nums shrink-0">
+                  <span className="font-mono text-xs font-bold text-[var(--critical)] tabular-nums shrink-0">
                     {t.areaKm2} KM²
                   </span>
                 </div>

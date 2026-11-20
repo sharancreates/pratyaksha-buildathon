@@ -18,39 +18,31 @@ export function KpiCard({ metric }: { metric: KpiCardMetric }) {
   return (
     <div
       tabIndex={0}
-      className="card group relative flex flex-col justify-between gap-4 p-5 bg-white border-t-2 border-black cursor-pointer select-none"
+      className="tile tile-interactive group relative flex flex-col justify-between gap-3 p-5 rounded-3xl bg-white border border-black/[0.04] shadow-[0_1px_2px_0_rgb(0_0_0/0.05)] cursor-pointer select-none transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_10px_30px_rgb(0_0_0/0.08)]"
     >
-      {/* Decorative quiet index number */}
-      <span
-        aria-hidden="true"
-        className="index-md absolute right-2 bottom-1 text-[#E5E7EB] group-hover:text-[#374151] pointer-events-none select-none"
-      >
-        {metric.id.slice(-2).toUpperCase()}
-      </span>
-
       <div className="flex items-start justify-between gap-2 relative z-10">
-        <span className="text-[11px] font-black uppercase tracking-wider text-black group-hover:text-white leading-tight">
+        <span className="text-xs font-semibold text-[var(--text-muted)] group-hover:text-[var(--ink)] leading-tight transition-colors">
           {metric.label}
         </span>
         <span
-          className={`text-[10px] font-mono font-black uppercase px-1.5 py-0.5 border ${
+          className={`text-[10px] font-bold px-2 py-0.5 rounded-full border transition-colors ${
             isCritical
-              ? 'border-[#FF0000] text-[#FF0000] bg-white group-hover:bg-[#FF0000] group-hover:text-white'
+              ? 'border-rose-200 bg-rose-50 text-[var(--critical)]'
               : isWarning
-              ? 'border-black text-black bg-white group-hover:bg-white group-hover:text-black'
-              : 'border-black text-black bg-white group-hover:bg-white group-hover:text-black'
+              ? 'border-amber-200 bg-amber-50 text-amber-700'
+              : 'border-emerald-200 bg-emerald-50 text-emerald-700'
           }`}
         >
           {statusLabel}
         </span>
       </div>
 
-      <div className="flex items-end justify-between gap-3 relative z-10">
+      <div className="flex items-end justify-between gap-3 relative z-10 my-1">
         <div className="flex items-baseline gap-1.5 min-w-0">
-          <span className="text-3xl font-black tracking-tight text-black group-hover:text-white tabular-nums">
+          <span className="text-3xl font-bold tracking-tight text-[var(--ink)] tabular-nums">
             {metric.formattedValue}
           </span>
-          <span className="text-xs font-mono font-bold text-[#4B5563] group-hover:text-[#D1D5DB] truncate">
+          <span className="text-xs font-medium text-[var(--text-muted)] truncate">
             {metric.unit}
           </span>
         </div>
@@ -61,8 +53,8 @@ export function KpiCard({ metric }: { metric: KpiCardMetric }) {
               <Line
                 type="monotone"
                 dataKey="v"
-                stroke={isCritical ? '#FF0000' : '#000000'}
-                strokeWidth={2}
+                stroke={isCritical ? '#FF3B30' : '#007AFF'}
+                strokeWidth={2.5}
                 dot={false}
                 isAnimationActive={false}
               />
@@ -71,12 +63,14 @@ export function KpiCard({ metric }: { metric: KpiCardMetric }) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between text-[11px] font-mono pt-3 border-t border-black/20 group-hover:border-white/20 relative z-10">
+      <div className="flex items-center justify-between text-[11px] pt-3 border-t border-black/[0.06] relative z-10">
         <span
-          className={`inline-flex items-center gap-1 font-bold ${
+          className={`inline-flex items-center gap-1 font-semibold ${
             isCritical
-              ? 'text-[#FF0000] group-hover:text-[#FF0000]'
-              : 'text-black group-hover:text-white'
+              ? 'text-[var(--critical)]'
+              : isWarning
+              ? 'text-amber-700'
+              : 'text-[var(--ink)]'
           }`}
         >
           {metric.trend === 'up' ? (
@@ -88,8 +82,8 @@ export function KpiCard({ metric }: { metric: KpiCardMetric }) {
           )}
           <span className="tabular-nums">{metric.deltaLabel}</span>
         </span>
-        <span className="text-[#4B5563] group-hover:text-[#D1D5DB] tabular-nums font-medium">
-          PREV {metric.previousValue}
+        <span className="text-[var(--text-muted)] tabular-nums font-normal text-[10px]">
+          Prev {metric.previousValue}
         </span>
       </div>
     </div>

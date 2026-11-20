@@ -401,15 +401,15 @@ export function IntelligenceMap({
   }, [activeLayer]);
 
   return (
-    <div className="border-2 border-black bg-white flex flex-col">
+    <div className="rounded-2xl overflow-hidden bg-white flex flex-col">
       {/* Map Toolbar */}
-      <div className="px-5 py-3 border-b-2 border-black flex flex-wrap items-center justify-between gap-3 bg-white">
+      <div className="px-5 py-3 border-b border-black/[0.06] flex flex-wrap items-center justify-between gap-3 bg-white">
         <div className="flex items-center gap-2.5 min-w-0">
-          <Layers className="w-4 h-4 text-black shrink-0" aria-hidden="true" />
-          <span className="text-xs font-black uppercase tracking-wider text-black whitespace-nowrap">
+          <Layers className="w-4 h-4 text-[var(--blue)] shrink-0" aria-hidden="true" />
+          <span className="text-xs font-bold tracking-tight text-[var(--ink)] whitespace-nowrap">
             INTELLIGENCE MAP — {municipality.name}
           </span>
-          <span className="hidden xl:inline text-[11px] font-mono text-[#4B5563] whitespace-nowrap">
+          <span className="hidden xl:inline text-[11px] font-mono text-[var(--text-muted)] whitespace-nowrap">
             · {municipality.crsUtm} → EPSG:4326
           </span>
         </div>
@@ -420,10 +420,10 @@ export function IntelligenceMap({
               key={layer.id}
               type="button"
               onClick={() => setActiveLayer(layer.id)}
-              className={`px-3 py-1.5 text-[11px] font-black uppercase tracking-wider transition-none whitespace-nowrap border-2 ${
+              className={`px-3 py-1.5 text-xs font-semibold rounded-full transition-all whitespace-nowrap ${
                 activeLayer === layer.id
-                  ? 'bg-black text-white border-black'
-                  : 'bg-white text-black border-black hover:bg-[#E5E7EB]'
+                  ? 'bg-[var(--ink)] text-white shadow-xs'
+                  : 'bg-[var(--canvas)] text-[var(--text-muted)] hover:text-[var(--ink)] hover:bg-[#E5E5EA]'
               }`}
             >
               {layer.label}
@@ -438,34 +438,34 @@ export function IntelligenceMap({
           <div ref={containerRef} className="w-full h-full min-h-[420px] xl:min-h-[520px]" />
 
           {/* Top-left Base Map Toggle */}
-          <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-white border-2 border-black p-1 shadow-[4px_4px_0px_#000]">
+          <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-white/90 backdrop-blur-md border border-black/[0.08] p-1 rounded-full shadow-[0_4px_16px_rgb(0_0_0/0.08)]">
             <button
               type="button"
               onClick={() => setBaseStyle('satellite')}
-              className={`inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-black uppercase tracking-wider transition-none ${
-                baseStyle === 'satellite' ? 'bg-black text-white' : 'text-black hover:bg-[#E5E7EB]'
+              className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full transition-all ${
+                baseStyle === 'satellite' ? 'bg-[var(--ink)] text-white shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--ink)]'
               }`}
             >
               <Satellite className="w-3 h-3" aria-hidden="true" />
-              SATELLITE
+              Satellite
             </button>
             <button
               type="button"
               onClick={() => setBaseStyle('dark')}
-              className={`px-3 py-1 text-[11px] font-black uppercase tracking-wider transition-none ${
-                baseStyle === 'dark' ? 'bg-black text-white' : 'text-black hover:bg-[#E5E7EB]'
+              className={`px-3 py-1 text-xs font-semibold rounded-full transition-all ${
+                baseStyle === 'dark' ? 'bg-[var(--ink)] text-white shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--ink)]'
               }`}
             >
-              DARK
+              Dark
             </button>
           </div>
 
           {/* Top-right Zoom & Recenter Controls */}
-          <div className="absolute top-4 right-4 z-10 flex flex-col gap-1 bg-white border-2 border-black p-1 shadow-[4px_4px_0px_#000]">
+          <div className="absolute top-4 right-4 z-10 flex flex-col gap-1 bg-white/90 backdrop-blur-md border border-black/[0.08] p-1 rounded-2xl shadow-[0_4px_16px_rgb(0_0_0/0.08)]">
             <button
               type="button"
               onClick={() => handleZoom(0.9)}
-              className="w-8 h-8 flex items-center justify-center text-black hover:bg-black hover:text-white transition-none"
+              className="w-8 h-8 rounded-xl flex items-center justify-center text-[var(--ink)] hover:bg-black/[0.05] transition-colors"
               aria-label="Zoom in"
             >
               <Plus className="w-4 h-4" />
@@ -473,7 +473,7 @@ export function IntelligenceMap({
             <button
               type="button"
               onClick={() => handleZoom(-0.9)}
-              className="w-8 h-8 flex items-center justify-center text-black hover:bg-black hover:text-white transition-none border-t border-black/20"
+              className="w-8 h-8 rounded-xl flex items-center justify-center text-[var(--ink)] hover:bg-black/[0.05] transition-colors"
               aria-label="Zoom out"
             >
               <Minus className="w-4 h-4" />
@@ -481,7 +481,7 @@ export function IntelligenceMap({
             <button
               type="button"
               onClick={handleRecenter}
-              className="w-8 h-8 flex items-center justify-center text-black hover:bg-black hover:text-white transition-none border-t border-black/20"
+              className="w-8 h-8 rounded-xl flex items-center justify-center text-[var(--ink)] hover:bg-black/[0.05] transition-colors border-t border-black/[0.06]"
               aria-label="Recenter on municipality"
             >
               <Crosshair className="w-4 h-4" />
@@ -489,15 +489,15 @@ export function IntelligenceMap({
           </div>
 
           {/* Bottom-left Dynamic Legend */}
-          <div className="absolute bottom-4 left-4 z-10 bg-white border-2 border-black p-3 shadow-[4px_4px_0px_#000] max-w-xs">
-            <div className="text-[11px] font-black uppercase tracking-wider text-black mb-2 border-b border-black/20 pb-1">
-              {LAYER_META.find((l) => l.id === activeLayer)?.label} LEGEND
+          <div className="absolute bottom-4 left-4 z-10 bg-white/90 backdrop-blur-md border border-black/[0.08] p-3 rounded-2xl shadow-[0_4px_16px_rgb(0_0_0/0.08)] max-w-xs">
+            <div className="text-[11px] font-bold text-[var(--ink)] mb-2 border-b border-black/[0.06] pb-1">
+              {LAYER_META.find((l) => l.id === activeLayer)?.label} Legend
             </div>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
               {legendItems.map((item) => (
-                <div key={item.label} className="flex items-center gap-2 text-[10px] font-mono font-bold text-black">
+                <div key={item.label} className="flex items-center gap-2 text-[10px] font-medium text-[var(--ink)]">
                   <span
-                    className="w-3 h-3 border border-black shrink-0"
+                    className="w-2.5 h-2.5 rounded-full shrink-0"
                     style={{ backgroundColor: item.color }}
                     aria-hidden="true"
                   />
@@ -508,85 +508,85 @@ export function IntelligenceMap({
           </div>
 
           {/* Bottom-right Coordinate Readout */}
-          <div className="absolute bottom-4 right-4 z-10 bg-white border-2 border-black px-3 py-1 text-[11px] font-mono font-bold text-black tabular-nums shadow-[3px_3px_0px_#000]">
+          <div className="absolute bottom-4 right-4 z-10 bg-white/90 backdrop-blur-md border border-black/[0.08] px-3 py-1 rounded-full text-[11px] font-mono font-medium text-[var(--ink)] tabular-nums shadow-[0_4px_16px_rgb(0_0_0/0.08)]">
             {cursorCoords[1].toFixed(4)}° N, {cursorCoords[0].toFixed(4)}° E
           </div>
         </div>
 
         {/* Ward Inspector Side Panel */}
-        <div className="xl:col-span-4 border-t-2 xl:border-t-0 xl:border-l-2 border-black bg-white p-6 flex flex-col justify-between gap-6">
+        <div className="xl:col-span-4 border-t xl:border-t-0 xl:border-l border-black/[0.06] bg-white p-6 flex flex-col justify-between gap-6">
           {selectedWard ? (
             <>
               <div className="space-y-5">
-                <div className="border-b-2 border-black pb-4">
-                  <div className="flex items-center justify-between gap-2 text-[11px] font-mono">
-                    <span className="text-[#4B5563] uppercase">ZONE TELEMETRY</span>
+                <div className="border-b border-black/[0.06] pb-4">
+                  <div className="flex items-center justify-between gap-2 text-[11px]">
+                    <span className="text-[var(--text-muted)] font-medium uppercase">Zone Telemetry</span>
                     <span
-                      className={`font-mono text-xs font-black uppercase px-2 py-0.5 border ${
+                      className={`text-xs font-bold uppercase px-2 py-0.5 rounded-full border ${
                         selectedWard.severity === 'critical'
-                          ? 'border-[#FF0000] text-[#FF0000]'
-                          : 'border-black text-black'
+                          ? 'border-rose-200 bg-rose-50 text-[var(--critical)]'
+                          : 'border-emerald-200 bg-emerald-50 text-emerald-700'
                       }`}
                     >
-                      {selectedWard.severity.toUpperCase()} · RISK {selectedWard.riskScore}/100
+                      {selectedWard.severity} · Risk {selectedWard.riskScore}/100
                     </span>
                   </div>
-                  <h3 className="mt-2 text-lg font-black uppercase tracking-tight text-black">
+                  <h3 className="mt-2 text-lg font-bold tracking-tight text-[var(--ink)]">
                     {selectedWard.name}
                   </h3>
-                  <div className="mt-1 text-xs font-mono text-[#4B5563] tabular-nums">
+                  <div className="mt-1 text-xs text-[var(--text-muted)] tabular-nums">
                     {selectedWard.center[1].toFixed(4)}°N, {selectedWard.center[0].toFixed(4)}°E ·{' '}
                     {selectedWard.areaKm2} km² · Pop {(selectedWard.population / 1000).toFixed(0)}k
                   </div>
                 </div>
 
-                {/* Ward Metrics 2x2 Grid */}
+                {/* Ward Metrics 2x2 Bento Tiles */}
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="card-boxed !p-3 group">
-                    <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                  <div className="p-3.5 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] transition-all hover:scale-[1.02] group">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
                       LST TEMP
                     </div>
-                    <div className="mt-1 text-xl font-black tabular-nums">
+                    <div className="mt-1 text-xl font-bold text-[var(--ink)] tabular-nums">
                       {selectedWard.lstCelsius.toFixed(1)} °C
                     </div>
-                    <div className="text-[10px] font-mono text-[#FF0000] group-hover:text-[#FF0000] font-bold tabular-nums">
+                    <div className="text-[10px] text-[var(--critical)] font-semibold tabular-nums mt-0.5">
                       {selectedWard.lstCelsius - selectedWard.lstBaseline >= 0 ? '+' : ''}
                       {(selectedWard.lstCelsius - selectedWard.lstBaseline).toFixed(1)} °C vs base
                     </div>
                   </div>
 
-                  <div className="card-boxed !p-3 group">
-                    <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                  <div className="p-3.5 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] transition-all hover:scale-[1.02] group">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
                       CANOPY NDVI
                     </div>
-                    <div className="mt-1 text-xl font-black tabular-nums">
+                    <div className="mt-1 text-xl font-bold text-[var(--ink)] tabular-nums">
                       {selectedWard.ndvi.toFixed(2)}
                     </div>
-                    <div className="text-[10px] font-mono text-[#4B5563] group-hover:text-[#D1D5DB] tabular-nums">
+                    <div className="text-[10px] text-[var(--text-muted)] tabular-nums mt-0.5">
                       Base {selectedWard.ndviBaseline.toFixed(2)}
                     </div>
                   </div>
 
-                  <div className="card-boxed !p-3 group">
-                    <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                  <div className="p-3.5 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] transition-all hover:scale-[1.02] group">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
                       NO₂ TROPO
                     </div>
-                    <div className="mt-1 text-xl font-black tabular-nums">
+                    <div className="mt-1 text-xl font-bold text-[var(--ink)] tabular-nums">
                       {selectedWard.no2UmolM2.toFixed(1)}
                     </div>
-                    <div className="text-[10px] font-mono text-[#4B5563] group-hover:text-[#D1D5DB] tabular-nums">
+                    <div className="text-[10px] text-[var(--text-muted)] tabular-nums mt-0.5">
                       AQI {selectedWard.aqi}
                     </div>
                   </div>
 
-                  <div className="card-boxed !p-3 group">
-                    <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                  <div className="p-3.5 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] transition-all hover:scale-[1.02] group">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
                       WATER EXTENT
                     </div>
-                    <div className="mt-1 text-xl font-black tabular-nums">
+                    <div className="mt-1 text-xl font-bold text-[var(--ink)] tabular-nums">
                       {selectedWard.waterExtentKm2.toFixed(2)} km²
                     </div>
-                    <div className="text-[10px] font-mono text-[#4B5563] group-hover:text-[#D1D5DB] tabular-nums">
+                    <div className="text-[10px] text-[var(--text-muted)] tabular-nums mt-0.5">
                       Base {selectedWard.waterBaselineKm2.toFixed(2)} km²
                     </div>
                   </div>
@@ -594,7 +594,7 @@ export function IntelligenceMap({
 
                 {/* Quick Ward Switcher */}
                 <div>
-                  <div className="text-[11px] font-black uppercase tracking-wider text-black mb-2">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink)] mb-2">
                     SELECT MUNICIPAL SECTOR
                   </div>
                   <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
@@ -606,14 +606,14 @@ export function IntelligenceMap({
                           setSelectedWard(w);
                           mapRef.current?.flyTo({ center: w.center, zoom: 12.2, duration: 400 });
                         }}
-                        className={`w-full flex items-center justify-between px-3 py-2 text-left text-xs font-bold uppercase transition-none border ${
+                        className={`w-full flex items-center justify-between px-3.5 py-2 text-left text-xs font-semibold rounded-xl transition-all ${
                           selectedWard.id === w.id
-                            ? 'bg-black text-white border-black'
-                            : 'bg-white text-black border-black/20 hover:border-black'
+                            ? 'bg-[var(--ink)] text-white shadow-xs'
+                            : 'bg-[var(--canvas)] text-[var(--ink)] hover:bg-[#E5E5EA]'
                         }`}
                       >
                         <span className="truncate">{w.name}</span>
-                        <span className="font-mono text-[11px] tabular-nums ml-2 shrink-0">
+                        <span className="font-mono text-[11px] tabular-nums ml-2 shrink-0 opacity-80">
                           {w.riskScore}
                         </span>
                       </button>
@@ -622,31 +622,31 @@ export function IntelligenceMap({
                 </div>
               </div>
 
-              <div className="pt-4 border-t-2 border-black flex flex-wrap gap-2">
+              <div className="pt-4 border-t border-black/[0.06] flex flex-wrap gap-2">
                 {onInspectAnomaly && (
                   <button
                     type="button"
                     onClick={() => onInspectAnomaly(selectedWard.id)}
-                    className="button-sm flex-1 text-xs"
+                    className="button-sm flex-1 text-xs rounded-full"
                   >
                     <ShieldAlert className="w-3.5 h-3.5 mr-1.5" aria-hidden="true" />
-                    INSPECT ANOMALY
+                    Inspect Anomaly
                   </button>
                 )}
                 {onOpenActionPlan && (
                   <button
                     type="button"
                     onClick={onOpenActionPlan}
-                    className="button-sm bg-black text-white hover:bg-white hover:text-black text-xs"
+                    className="button-signal text-xs rounded-full"
                   >
                     <FileText className="w-3.5 h-3.5 mr-1.5" aria-hidden="true" />
-                    ACTION PLAN
+                    Action Plan
                   </button>
                 )}
               </div>
             </>
           ) : (
-            <div className="text-xs text-[#4B5563] font-mono">
+            <div className="text-xs text-[var(--text-muted)] font-mono">
               SELECT A MUNICIPAL WARD ON THE MAP TO INSPECT TELEMETRY.
             </div>
           )}

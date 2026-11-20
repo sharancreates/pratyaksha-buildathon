@@ -128,28 +128,22 @@ export function ActionPlan() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header Toolbar */}
-      <section className="hero-compact border-2 border-black bg-white relative overflow-hidden flex flex-col justify-between">
-        <span
-          aria-hidden="true"
-          className="index absolute right-4 top-2 text-[#E5E7EB] pointer-events-none select-none"
-        >
-          07
-        </span>
-
+      <section className="tile rounded-3xl bg-white p-8 shadow-sm border border-black/[0.04] relative overflow-hidden flex flex-col justify-between">
         <div className="relative z-10">
-          <div className="text-[11px] font-mono font-bold tracking-wider text-[#4B5563] uppercase mb-3">
-            POLICY SYNTHESIS · SATELLITE + ML CONSENSUS + FORECAST EVIDENCE
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--canvas)] text-[var(--ink)] text-xs font-semibold mb-3">
+            <span className="w-2 h-2 rounded-full bg-[var(--blue)] animate-pulse" aria-hidden="true" />
+            <span>MUNICIPAL POLICY SYNTHESIS</span>
+            <span aria-hidden="true">·</span>
+            <span className="text-[var(--text-muted)]">SATELLITE + ML CONSENSUS + FORECAST</span>
           </div>
 
-          <h1 className="display mb-4 text-black">
-            <span className="outline">ACTION</span>
-            <br />
-            PLAN
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--ink)] mb-3">
+            Environment Action Plan
           </h1>
 
-          <p className="lead mb-6 text-[#4B5563]">
+          <p className="text-[var(--text-muted)] text-sm sm:text-base max-w-xl font-normal leading-relaxed mb-6">
             Convert detected hotspots, multi-model consensus risk, and 30-day forecasts into
             exportable municipal intervention plans.
           </p>
@@ -159,7 +153,7 @@ export function ActionPlan() {
               type="button"
               disabled={generating}
               onClick={() => void handleGenerate()}
-              className="button-sm bg-black text-white hover:bg-white hover:text-black disabled:opacity-50"
+              className="button-signal rounded-full px-5 py-2.5 text-xs font-semibold disabled:opacity-50"
             >
               {generating ? (
                 <RefreshCw className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
@@ -172,19 +166,19 @@ export function ActionPlan() {
               type="button"
               disabled={!activePlan}
               onClick={handleExportPdf}
-              className="button-sm disabled:opacity-40"
+              className="rounded-full px-4 py-2.5 text-xs font-semibold bg-[var(--canvas)] hover:bg-[#E5E5EA] text-[var(--ink)] transition-colors border border-black/[0.08] disabled:opacity-40"
             >
-              <Download className="w-4 h-4 mr-2" aria-hidden="true" />
-              EXPORT PDF
+              <Download className="w-4 h-4 mr-2 inline" aria-hidden="true" />
+              Export PDF
             </button>
             <button
               type="button"
               disabled={!activePlan}
               onClick={handleExportJson}
-              className="button-sm disabled:opacity-40"
+              className="rounded-full px-4 py-2.5 text-xs font-semibold bg-[var(--canvas)] hover:bg-[#E5E5EA] text-[var(--ink)] transition-colors border border-black/[0.08] disabled:opacity-40"
             >
-              <FileJson className="w-4 h-4 mr-2" aria-hidden="true" />
-              EXPORT JSON
+              <FileJson className="w-4 h-4 mr-2 inline" aria-hidden="true" />
+              Export JSON
             </button>
           </div>
         </div>
@@ -193,38 +187,38 @@ export function ActionPlan() {
       <section className="grid grid-cols-1 xl:grid-cols-12 gap-6">
         {/* Left Column: Report History + Cloud Persisted Plans */}
         <div className="xl:col-span-4 space-y-6">
-          <div className="border-2 border-black bg-white overflow-hidden">
-            <div className="px-6 py-4 border-b-2 border-black flex items-center justify-between bg-black text-white">
-              <span className="text-xs font-black uppercase tracking-widest text-white">
+          <div className="tile rounded-3xl bg-white p-6 shadow-sm border border-black/[0.04] overflow-hidden">
+            <div className="flex items-center justify-between pb-3 border-b border-black/[0.06] mb-2">
+              <span className="text-sm font-bold tracking-tight text-[var(--ink)]">
                 REPORT HISTORY ({reports.length})
               </span>
-              <span className="text-[10px] font-mono font-bold text-white uppercase border border-white px-1.5 py-0.5">
-                SESSION
+              <span className="text-[10px] font-semibold text-[var(--blue)] bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">
+                Session
               </span>
             </div>
-            <div className="divide-y-2 divide-black max-h-80 overflow-y-auto">
+            <div className="divide-y divide-black/[0.06] max-h-80 overflow-y-auto">
               {reports.map((r) => (
                 <button
                   key={r.id}
                   type="button"
                   onClick={() => setActivePlan(r)}
-                  className={`w-full text-left px-6 py-4 transition-none group ${
+                  className={`w-full text-left py-3 px-3 rounded-2xl transition-colors ${
                     activePlan?.id === r.id
-                      ? 'bg-black text-white'
-                      : 'hover:bg-[#E5E7EB] text-black'
+                      ? 'bg-[var(--canvas)] font-semibold'
+                      : 'hover:bg-[var(--canvas)] text-[var(--ink)]'
                   }`}
                 >
                   <div className="flex items-center justify-between text-[11px] font-mono">
-                    <span className="font-bold">{r.id}</span>
-                    <span className="tabular-nums font-bold">
-                      HEALTH {r.environmentalHealthOverview.healthIndex}/100
+                    <span className="font-semibold text-[var(--blue)]">{r.id}</span>
+                    <span className="tabular-nums font-semibold text-[var(--ink)]">
+                      Health {r.environmentalHealthOverview.healthIndex}/100
                     </span>
                   </div>
-                  <div className="mt-1 text-xs font-black uppercase tracking-tight truncate">
+                  <div className="mt-1 text-xs font-bold text-[var(--ink)] truncate">
                     {r.title}
                   </div>
-                  <div className="mt-1 text-[10px] font-mono opacity-70">
-                    {new Date(r.generatedAt).toLocaleString()} · {r.recommendations.length} ACTIONS
+                  <div className="mt-1 text-[11px] text-[var(--text-muted)]">
+                    {new Date(r.generatedAt).toLocaleString()} · {r.recommendations.length} actions
                   </div>
                 </button>
               ))}
@@ -232,20 +226,20 @@ export function ActionPlan() {
           </div>
 
           {/* Firestore Cloud Archive */}
-          <div className="border-2 border-black bg-white p-6 space-y-4">
-            <div className="flex items-center justify-between border-b-2 border-black pb-3">
-              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-black">
-                <Cloud className="w-4 h-4 text-black" aria-hidden="true" />
+          <div className="tile rounded-3xl bg-white p-6 shadow-sm border border-black/[0.04] space-y-4">
+            <div className="flex items-center justify-between border-b border-black/[0.06] pb-3">
+              <div className="flex items-center gap-2 text-sm font-bold tracking-tight text-[var(--ink)]">
+                <Cloud className="w-4 h-4 text-[var(--blue)]" aria-hidden="true" />
                 <span>FIRESTORE CLOUD ARCHIVE ({cloudPlans.length})</span>
               </div>
             </div>
             {!user ? (
-              <p className="text-xs text-[#4B5563] leading-relaxed">
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed">
                 Sign in with Google from the top header to persist generated Environment Action Plans
                 and track municipal approval status in Firestore.
               </p>
             ) : cloudPlans.length === 0 ? (
-              <p className="text-xs text-[#4B5563]">
+              <p className="text-xs text-[var(--text-muted)]">
                 Click "Generate New Report" while signed in to save your first plan to Firestore.
               </p>
             ) : (
@@ -253,40 +247,40 @@ export function ActionPlan() {
                 {cloudPlans.map((cp) => (
                   <div
                     key={cp.id}
-                    className="border-2 border-black p-4 space-y-2 bg-white"
+                    className="p-4 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] space-y-2"
                   >
                     <div className="flex items-center justify-between text-[11px] font-mono">
-                      <span className="font-bold text-black truncate">{cp.id}</span>
+                      <span className="font-semibold text-[var(--ink)] truncate">{cp.id}</span>
                       <span
-                        className={`uppercase font-black px-1.5 py-0.5 border text-[10px] ${
+                        className={`uppercase font-bold px-2 py-0.5 rounded-full text-[10px] ${
                           cp.status === 'approved'
-                            ? 'border-black bg-black text-white'
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             : cp.status === 'archived'
-                            ? 'border-black text-[#4B5563]'
-                            : 'border-[#FF0000] text-[#FF0000]'
+                            ? 'bg-gray-100 text-[var(--text-muted)]'
+                            : 'bg-rose-50 text-[var(--critical)] border border-rose-200'
                         }`}
                       >
                         {cp.status}
                       </span>
                     </div>
-                    <div className="text-xs font-black uppercase tracking-tight">{cp.title}</div>
+                    <div className="text-xs font-bold text-[var(--ink)]">{cp.title}</div>
                     {cp.status !== 'archived' && (
-                      <div className="flex items-center gap-2 pt-2 border-t border-black/20">
+                      <div className="flex items-center gap-2 pt-2 border-t border-black/[0.06]">
                         {cp.status !== 'approved' && (
                           <button
                             type="button"
                             onClick={() => void handleCloudStatusUpdate(cp.id, 'approved')}
-                            className="button-sm !py-1 !px-2.5 text-[10px]"
+                            className="button-sm !py-1 !px-3 text-[10px] rounded-full"
                           >
-                            APPROVE
+                            Approve
                           </button>
                         )}
                         <button
                           type="button"
                           onClick={() => void handleCloudStatusUpdate(cp.id, 'archived')}
-                          className="button-sm !py-1 !px-2.5 text-[10px] border-black text-[#4B5563]"
+                          className="px-3 py-1 text-[10px] font-semibold text-[var(--text-muted)] bg-white rounded-full border border-black/[0.08]"
                         >
-                          ARCHIVE
+                          Archive
                         </button>
                       </div>
                     )}
@@ -298,76 +292,76 @@ export function ActionPlan() {
         </div>
 
         {/* Right Column: Full Policy Report Preview */}
-        <div className="xl:col-span-8 border-2 border-black bg-white p-8 space-y-8">
+        <div className="xl:col-span-8 tile rounded-3xl bg-white p-8 shadow-sm border border-black/[0.04] space-y-8">
           {loading || !activePlan ? (
-            <div className="h-96 border-2 border-black bg-[#E5E7EB] animate-pulse" />
+            <div className="h-96 rounded-3xl bg-white/60 animate-pulse border border-black/[0.04]" />
           ) : (
             <>
               {/* Report Title Block */}
-              <div className="border-b-2 border-black pb-6 space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono font-bold text-black">
-                  <span className="inline-flex items-center gap-1.5">
-                    <FileText className="w-4 h-4 text-black" aria-hidden="true" />
+              <div className="border-b border-black/[0.06] pb-6 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <span className="inline-flex items-center gap-1.5 font-semibold text-[var(--blue)]">
+                    <FileText className="w-4 h-4" aria-hidden="true" />
                     {activePlan.id}
                   </span>
-                  <span className="text-[#FF0000]">
-                    DEMO MODE · SATELLITE EVIDENCE ENGINE
+                  <span className="text-[10px] font-bold text-[var(--blue)] bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
+                    Satellite Evidence Engine
                   </span>
                 </div>
-                <h2 className="display-sub mb-1 text-black">
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--ink)]">
                   {activePlan.title}
                 </h2>
-                <div className="text-xs font-mono font-bold text-[#4B5563] uppercase">
-                  {activePlan.corporation} · GENERATED {new Date(activePlan.generatedAt).toUTCString()}
+                <div className="text-xs text-[var(--text-muted)]">
+                  {activePlan.corporation} · Generated {new Date(activePlan.generatedAt).toUTCString()}
                 </div>
               </div>
 
               {/* 1. Executive Summary */}
               <div className="space-y-3">
-                <h3 className="text-xs font-black uppercase tracking-widest text-black border-b-2 border-black pb-1">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-black/[0.06] pb-1">
                   01. EXECUTIVE SUMMARY
                 </h3>
-                <p className="lead !max-w-none text-black leading-relaxed">
+                <p className="text-sm text-[var(--ink)] leading-relaxed font-normal">
                   {activePlan.executiveSummary}
                 </p>
               </div>
 
               {/* 2. Municipal Environmental Health Overview */}
               <div className="space-y-4">
-                <h3 className="text-xs font-black uppercase tracking-widest text-black border-b-2 border-black pb-1">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-black/[0.06] pb-1">
                   02. MUNICIPAL ENVIRONMENTAL HEALTH OVERVIEW
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <div className="border-2 border-black p-4 bg-white hover:bg-black hover:text-white transition-none group">
-                    <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                  <div className="p-4 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] transition-all hover:scale-[1.02]">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
                       HEALTH INDEX
                     </div>
-                    <div className="mt-1 text-2xl font-black tabular-nums">
+                    <div className="mt-1 text-2xl font-bold text-[var(--ink)] tabular-nums">
                       {activePlan.environmentalHealthOverview.healthIndex}/100
                     </div>
                   </div>
-                  <div className="border-2 border-black p-4 bg-white hover:bg-black hover:text-white transition-none group">
-                    <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                  <div className="p-4 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] transition-all hover:scale-[1.02]">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
                       MEAN LST
                     </div>
-                    <div className="mt-1 text-2xl font-black tabular-nums">
+                    <div className="mt-1 text-2xl font-bold text-[var(--ink)] tabular-nums">
                       {activePlan.environmentalHealthOverview.avgLstCelsius} °C
                     </div>
                   </div>
-                  <div className="border-2 border-black p-4 bg-white hover:bg-black hover:text-white transition-none group">
-                    <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                  <div className="p-4 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] transition-all hover:scale-[1.02]">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
                       NDVI · AQI
                     </div>
-                    <div className="mt-1 text-2xl font-black tabular-nums">
+                    <div className="mt-1 text-2xl font-bold text-[var(--ink)] tabular-nums">
                       {activePlan.environmentalHealthOverview.avgNdvi} · {activePlan.environmentalHealthOverview.avgAqi}
                     </div>
                   </div>
-                  <div className="border-2 border-black p-4 bg-white hover:bg-black hover:text-white transition-none group">
-                    <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                  <div className="p-4 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] transition-all hover:scale-[1.02]">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
                       ANOMALIES
                     </div>
-                    <div className="mt-1 text-2xl font-black text-[#FF0000] tabular-nums">
-                      {activePlan.environmentalHealthOverview.activeAnomalyCount} ({activePlan.environmentalHealthOverview.criticalAnomalyCount} CRIT)
+                    <div className="mt-1 text-2xl font-bold text-[var(--critical)] tabular-nums">
+                      {activePlan.environmentalHealthOverview.activeAnomalyCount} ({activePlan.environmentalHealthOverview.criticalAnomalyCount} crit)
                     </div>
                   </div>
                 </div>
@@ -375,34 +369,36 @@ export function ActionPlan() {
 
               {/* 3. Major Threats & 4. Geographic Hotspots */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="border-2 border-black p-5 space-y-3 bg-white">
-                  <h3 className="text-xs font-black uppercase tracking-widest text-black border-b-2 border-black pb-1">
+                <div className="p-5 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] space-y-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-black/[0.06] pb-1">
                     03. MAJOR ENVIRONMENTAL THREATS
                   </h3>
                   {activePlan.majorThreats.map((t, i) => (
-                    <div key={i} className="border-b-2 border-black/20 pb-3 last:border-b-0 last:pb-0">
-                      <div className="text-xs font-black uppercase">
-                        <span className="font-mono text-[#FF0000] mr-2">[{t.severity.toUpperCase()}]</span>
+                    <div key={i} className="border-b border-black/[0.06] pb-3 last:border-b-0 last:pb-0">
+                      <div className="text-xs font-bold text-[var(--ink)]">
+                        <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-rose-50 text-[var(--critical)] mr-2">
+                          {t.severity}
+                        </span>
                         {t.title}
                       </div>
-                      <p className="text-[11px] text-[#4B5563] mt-1 leading-snug">{t.summary}</p>
+                      <p className="text-xs text-[var(--text-muted)] mt-1 leading-snug">{t.summary}</p>
                     </div>
                   ))}
                 </div>
 
-                <div className="border-2 border-black p-5 space-y-3 bg-white">
-                  <h3 className="text-xs font-black uppercase tracking-widest text-black border-b-2 border-black pb-1">
+                <div className="p-5 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] space-y-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-black/[0.06] pb-1">
                     04. GEOGRAPHIC HOTSPOTS
                   </h3>
                   {activePlan.geographicHotspots.map((h, i) => (
-                    <div key={i} className="border-b-2 border-black/20 pb-3 last:border-b-0 last:pb-0">
+                    <div key={i} className="border-b border-black/[0.06] pb-3 last:border-b-0 last:pb-0">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-black uppercase">{h.wardName}</span>
-                        <span className="font-mono text-[#FF0000] font-black tabular-nums">
-                          RISK {h.riskScore}/100
+                        <span className="font-bold text-[var(--ink)]">{h.wardName}</span>
+                        <span className="text-xs font-bold text-[var(--critical)] tabular-nums">
+                          Risk {h.riskScore}/100
                         </span>
                       </div>
-                      <div className="text-[11px] font-mono text-[#4B5563] mt-1 tabular-nums">
+                      <div className="text-[11px] text-[var(--text-muted)] mt-1 tabular-nums">
                         {h.coordinates[1].toFixed(4)}°N, {h.coordinates[0].toFixed(4)}°E · {h.metricDetail}
                       </div>
                     </div>
@@ -412,42 +408,42 @@ export function ActionPlan() {
 
               {/* 5. Satellite Evidence & 6. ML Findings */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="border-2 border-black p-5 space-y-2 text-xs bg-white">
-                  <h3 className="text-xs font-black uppercase tracking-widest text-black border-b-2 border-black pb-1">
+                <div className="p-5 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] space-y-2 text-xs">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-black/[0.06] pb-1">
                     05. SATELLITE EVIDENCE
                   </h3>
-                  <div className="font-bold text-black uppercase">{activePlan.satelliteEvidence.missionsUsed.join(' · ')}</div>
-                  <div className="font-mono text-[11px] text-[#4B5563]">
-                    GRID: {activePlan.satelliteEvidence.harmonizedGrid} · {activePlan.satelliteEvidence.observationCount} TILES
+                  <div className="font-bold text-[var(--ink)]">{activePlan.satelliteEvidence.missionsUsed.join(' · ')}</div>
+                  <div className="text-xs text-[var(--text-muted)]">
+                    Grid: {activePlan.satelliteEvidence.harmonizedGrid} · {activePlan.satelliteEvidence.observationCount} tiles
                   </div>
-                  <p className="text-[11px] text-[#4B5563] pt-1">{activePlan.satelliteEvidence.note}</p>
+                  <p className="text-xs text-[var(--text-muted)] pt-1">{activePlan.satelliteEvidence.note}</p>
                 </div>
 
-                <div className="border-2 border-black p-5 space-y-2 text-xs bg-white">
-                  <h3 className="text-xs font-black uppercase tracking-widest text-black border-b-2 border-black pb-1">
+                <div className="p-5 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] space-y-2 text-xs">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-black/[0.06] pb-1">
                     06. MACHINE LEARNING FINDINGS
                   </h3>
-                  <div className="font-bold text-black">{activePlan.mlFindings.topConsensusFinding}</div>
-                  <div className="font-mono text-[11px] text-[#4B5563]">
-                    {activePlan.mlFindings.anomaliesDetected} ANOMALIES · {activePlan.mlFindings.spatialClustersFormed} DBSCAN CLUSTERS
+                  <div className="font-bold text-[var(--ink)]">{activePlan.mlFindings.topConsensusFinding}</div>
+                  <div className="text-xs text-[var(--text-muted)]">
+                    {activePlan.mlFindings.anomaliesDetected} anomalies · {activePlan.mlFindings.spatialClustersFormed} DBSCAN clusters
                   </div>
                 </div>
               </div>
 
               {/* 7. Environmental Forecasts */}
               <div className="space-y-4">
-                <h3 className="text-xs font-black uppercase tracking-widest text-black border-b-2 border-black pb-1">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-black/[0.06] pb-1">
                   07. ENVIRONMENTAL FORECASTS
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {activePlan.environmentalForecasts.map((f, i) => (
-                    <div key={i} className="border-2 border-black p-4 space-y-1.5 bg-white hover:bg-black hover:text-white transition-none group">
-                      <div className="text-xs font-black uppercase">{f.indicator}</div>
-                      <div className="flex items-center justify-between font-mono text-xs">
-                        <span className="font-black text-[#FF0000] tabular-nums">{f.projectedChange}</span>
-                        <span className="text-[#4B5563] group-hover:text-[#D1D5DB] font-bold uppercase">{f.horizon}</span>
+                    <div key={i} className="p-4 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] space-y-1.5 transition-all hover:scale-[1.02]">
+                      <div className="text-xs font-bold text-[var(--ink)]">{f.indicator}</div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-bold text-[var(--critical)] tabular-nums">{f.projectedChange}</span>
+                        <span className="text-xs text-[var(--text-muted)] font-medium uppercase">{f.horizon}</span>
                       </div>
-                      <p className="text-[11px] text-[#4B5563] group-hover:text-[#D1D5DB] leading-snug">{f.summary}</p>
+                      <p className="text-xs text-[var(--text-muted)] leading-snug">{f.summary}</p>
                     </div>
                   ))}
                 </div>
@@ -455,42 +451,36 @@ export function ActionPlan() {
 
               {/* 8. Recommended Government Actions */}
               <div className="space-y-4">
-                <h3 className="text-xs font-black uppercase tracking-widest text-black border-b-2 border-black pb-1">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-black/[0.06] pb-1">
                   08. PRIORITY INTERVENTION AREAS & RECOMMENDED ACTIONS
                 </h3>
                 <div className="space-y-4">
-                  {activePlan.recommendations.map((rec, idx) => (
+                  {activePlan.recommendations.map((rec) => (
                     <div
                       key={rec.id}
-                      className="border-2 border-black p-6 space-y-3 bg-white relative overflow-hidden"
+                      className="p-6 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] space-y-3 relative overflow-hidden"
                     >
-                      <span
-                        aria-hidden="true"
-                        className="index absolute right-4 top-2 text-[#E5E7EB] pointer-events-none select-none opacity-40"
-                      >
-                        0{idx + 1}
-                      </span>
-                      <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono relative z-10">
-                        <span className="font-black uppercase px-2 py-0.5 border border-[#FF0000] text-[#FF0000]">
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs relative z-10">
+                        <span className="font-bold uppercase text-[10px] px-2 py-0.5 rounded-full bg-rose-50 text-[var(--critical)] border border-rose-200">
                           {rec.priority}
                         </span>
-                        <span className="font-bold text-black uppercase">{rec.suggestedDepartment}</span>
+                        <span className="font-semibold text-[var(--ink)]">{rec.suggestedDepartment}</span>
                       </div>
-                      <div className="text-sm font-black uppercase tracking-tight relative z-10">
+                      <div className="text-sm font-bold text-[var(--ink)] relative z-10">
                         {rec.category} — {rec.geographicLocation}{' '}
-                        <span className="font-mono text-xs font-normal text-[#4B5563]">
+                        <span className="font-normal text-xs text-[var(--text-muted)]">
                           ({rec.coordinates[1].toFixed(3)}°N, {rec.coordinates[0].toFixed(3)}°E)
                         </span>
                       </div>
-                      <p className="text-xs text-black leading-relaxed relative z-10">
+                      <p className="text-xs text-[var(--ink)] leading-relaxed relative z-10 font-normal">
                         {rec.recommendedAction}
                       </p>
-                      <div className="text-[11px] text-[#4B5563] relative z-10">
-                        <strong className="text-black uppercase">Evidence:</strong> {rec.supportingEvidence}
+                      <div className="text-xs text-[var(--text-muted)] relative z-10">
+                        <strong className="text-[var(--ink)] font-semibold">Evidence:</strong> {rec.supportingEvidence}
                       </div>
-                      <div className="pt-3 border-t-2 border-black flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-[#4B5563] relative z-10 font-bold">
-                        <span>TIMELINE: {rec.suggestedTimeline}</span>
-                        <span className="text-black">METRIC: {rec.monitoringMetric}</span>
+                      <div className="pt-3 border-t border-black/[0.06] flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--text-muted)] relative z-10">
+                        <span>Timeline: {rec.suggestedTimeline}</span>
+                        <span className="text-[var(--ink)] font-semibold">Metric: {rec.monitoringMetric}</span>
                       </div>
                     </div>
                   ))}
@@ -499,18 +489,18 @@ export function ActionPlan() {
 
               {/* 9. Implementation Timeline */}
               <div className="space-y-4">
-                <h3 className="text-xs font-black uppercase tracking-widest text-black border-b-2 border-black pb-1">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-black/[0.06] pb-1">
                   09. SUGGESTED IMPLEMENTATION TIMELINE
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {activePlan.implementationTimeline.map((phase, i) => (
-                    <div key={i} className="border-2 border-black p-5 space-y-3 bg-white">
-                      <div className="text-[11px] font-mono font-black uppercase text-black">{phase.window}</div>
-                      <div className="text-xs font-black uppercase tracking-tight">{phase.phase}</div>
-                      <ul className="space-y-2 text-[11px] text-[#4B5563]">
+                    <div key={i} className="p-5 rounded-2xl bg-[var(--canvas)] border border-black/[0.04] space-y-3">
+                      <div className="text-xs font-mono font-bold text-[var(--blue)] uppercase">{phase.window}</div>
+                      <div className="text-xs font-bold text-[var(--ink)]">{phase.phase}</div>
+                      <ul className="space-y-2 text-xs text-[var(--text-muted)]">
                         {phase.milestones.map((m, j) => (
                           <li key={j} className="flex items-start gap-2">
-                            <CheckCircle2 className="w-4 h-4 text-black shrink-0 mt-0.5" aria-hidden="true" />
+                            <CheckCircle2 className="w-4 h-4 text-[var(--green)] shrink-0 mt-0.5" aria-hidden="true" />
                             <span className="leading-snug">{m}</span>
                           </li>
                         ))}
@@ -522,12 +512,12 @@ export function ActionPlan() {
 
               {/* 10. Monitoring & Evaluation Indicators */}
               <div className="space-y-4">
-                <h3 className="text-xs font-black uppercase tracking-widest text-black border-b-2 border-black pb-1">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-black/[0.06] pb-1">
                   10. MONITORING & EVALUATION INDICATORS
                 </h3>
-                <div className="overflow-x-auto border-2 border-black">
+                <div className="overflow-x-auto rounded-2xl border border-black/[0.04]">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#E5E7EB] text-[10px] font-mono font-black uppercase text-black border-b-2 border-black">
+                    <thead className="bg-[var(--canvas)] text-[11px] font-semibold text-[var(--text-muted)] border-b border-black/[0.06]">
                       <tr>
                         <th className="px-4 py-3">INDICATOR</th>
                         <th className="px-4 py-3 text-right">BASELINE</th>
@@ -535,17 +525,17 @@ export function ActionPlan() {
                         <th className="px-4 py-3">VERIFICATION SATELLITE</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y-2 divide-black text-[11px] font-mono">
+                    <tbody className="divide-y divide-black/[0.04] text-xs">
                       {activePlan.monitoringIndicators.map((ind, idx) => (
-                        <tr key={idx} className="hover:bg-black hover:text-white transition-none group">
-                          <td className="px-4 py-3 font-sans font-black uppercase">{ind.indicator}</td>
-                          <td className="px-4 py-3 text-right text-[#4B5563] group-hover:text-[#D1D5DB] tabular-nums">
+                        <tr key={idx} className="hover:bg-[var(--canvas)] transition-colors">
+                          <td className="px-4 py-3 font-semibold text-[var(--ink)]">{ind.indicator}</td>
+                          <td className="px-4 py-3 text-right text-[var(--text-muted)] tabular-nums">
                             {ind.baseline}
                           </td>
-                          <td className="px-4 py-3 text-right font-black tabular-nums">
+                          <td className="px-4 py-3 text-right font-bold text-[var(--ink)] tabular-nums">
                             {ind.target12Month}
                           </td>
-                          <td className="px-4 py-3 text-[#4B5563] group-hover:text-[#D1D5DB]">
+                          <td className="px-4 py-3 text-[var(--text-muted)]">
                             {ind.verificationSource}
                           </td>
                         </tr>

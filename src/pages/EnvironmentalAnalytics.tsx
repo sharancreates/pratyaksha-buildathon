@@ -57,32 +57,26 @@ export function EnvironmentalAnalytics() {
   }, [municipality, tabMeta.apiPath]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Hero Header */}
-      <section className="hero-compact border-2 border-black bg-white relative overflow-hidden flex flex-col justify-between">
-        <span
-          aria-hidden="true"
-          className="index absolute right-4 top-2 text-[#E5E7EB] pointer-events-none select-none"
-        >
-          03
-        </span>
-
+      <section className="tile rounded-3xl bg-white p-8 shadow-sm border border-black/[0.04] relative overflow-hidden flex flex-col justify-between">
         <div className="relative z-10">
-          <div className="text-[11px] font-mono font-bold tracking-wider text-[#4B5563] uppercase mb-3">
-            TELEMETRY · 45-DAY HARMONIZED HISTORICAL SERIES
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--canvas)] text-[var(--ink)] text-xs font-semibold mb-3">
+            <span className="w-2 h-2 rounded-full bg-[var(--blue)] animate-pulse" aria-hidden="true" />
+            <span>TELEMETRY HISTORICAL SERIES</span>
+            <span aria-hidden="true">·</span>
+            <span className="text-[var(--text-muted)]">45-DAY COMPOSITE</span>
           </div>
 
-          <h1 className="display mb-4 text-black">
-            <span className="outline">ENVIRONMENTAL</span>
-            <br />
-            ANALYTICS
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--ink)] mb-3">
+            Environmental Analytics
           </h1>
 
-          <p className="lead mb-6 text-[#4B5563]">
+          <p className="text-[var(--text-muted)] text-sm sm:text-base max-w-xl font-normal leading-relaxed mb-6">
             Harmonized multi-sensor historical trends, ward-level spatial distribution, and baseline deltas.
           </p>
 
-          {/* Module Switcher Tabs */}
+          {/* Module Switcher Tabs: Apple Segmented Pill Control */}
           <div className="flex flex-wrap gap-2 pt-2" role="tablist" aria-label="Analytics Module Selection">
             {TABS.map((t) => (
               <button
@@ -91,10 +85,10 @@ export function EnvironmentalAnalytics() {
                 role="tab"
                 aria-selected={activeTab === t.id}
                 onClick={() => setActiveTab(t.id)}
-                className={`px-4 py-2 text-xs font-black uppercase tracking-wider transition-none border-2 ${
+                className={`px-4 py-2 text-xs font-semibold rounded-full transition-all cursor-pointer ${
                   activeTab === t.id
-                    ? 'bg-black text-white border-black'
-                    : 'bg-white text-black border-black hover:bg-[#E5E7EB]'
+                    ? 'bg-[var(--ink)] text-white shadow-sm'
+                    : 'bg-[var(--canvas)] text-[var(--text-muted)] hover:text-[var(--ink)] hover:bg-[#E5E5EA]'
                 }`}
               >
                 {t.label}
@@ -106,41 +100,40 @@ export function EnvironmentalAnalytics() {
 
       {loading || !payload ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="h-80 border-2 border-black bg-[#E5E7EB] animate-pulse" />
-          <div className="h-80 border-2 border-black bg-[#E5E7EB] animate-pulse" />
+          <div className="h-80 rounded-3xl bg-white/60 animate-pulse border border-black/[0.04]" />
+          <div className="h-80 rounded-3xl bg-white/60 animate-pulse border border-black/[0.04]" />
         </div>
       ) : activeTab === 'land-cover' ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-7 border-2 border-black bg-white p-6">
-            <div className="border-b-2 border-black pb-3 mb-4">
-              <h2 className="text-xs font-black uppercase tracking-widest text-black">
+          <div className="lg:col-span-7 tile rounded-3xl bg-white p-6 shadow-sm border border-black/[0.04]">
+            <div className="border-b border-black/[0.06] pb-3 mb-4">
+              <h2 className="text-sm font-bold tracking-tight text-[var(--ink)]">
                 LAND COVER AREA DISTRIBUTION ({payload.totalAreaKm2} KM²)
               </h2>
-              <p className="text-[10px] font-mono text-[#4B5563] uppercase mt-0.5">
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">
                 {payload.modelArchitecture} · {payload.inferenceMode}
               </p>
             </div>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={payload.classes} layout="vertical" margin={{ top: 4, right: 20, left: 30, bottom: 4 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" horizontal={false} />
-                  <XAxis type="number" stroke="#000000" fontSize={10} fontStyle="bold" unit="%" />
-                  <YAxis type="category" dataKey="label" stroke="#000000" fontSize={11} fontStyle="bold" width={140} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" horizontal={false} />
+                  <XAxis type="number" stroke="#8E8E93" fontSize={11} unit="%" />
+                  <YAxis type="category" dataKey="label" stroke="#1D1D1F" fontSize={11} width={140} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#FFFFFF',
-                      borderColor: '#000000',
-                      borderWidth: '2px',
-                      borderRadius: '0px',
-                      fontSize: '11px',
-                      fontWeight: 'bold',
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      borderColor: 'rgba(0, 0, 0, 0.08)',
+                      borderRadius: '1rem',
+                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+                      fontSize: '12px',
                     }}
                   />
-                  <Bar dataKey="percentage" name="Share (%)">
+                  <Bar dataKey="percentage" name="Share (%)" radius={[0, 6, 6, 0]}>
                     {payload.classes.map((c: any) => (
                       <Cell
                         key={c.id}
-                        fill={c.id.includes('built_up') ? '#FF0000' : '#000000'}
+                        fill={c.id.includes('built_up') ? '#FF3B30' : '#007AFF'}
                       />
                     ))}
                   </Bar>
@@ -149,24 +142,24 @@ export function EnvironmentalAnalytics() {
             </div>
           </div>
 
-          <div className="lg:col-span-5 border-2 border-black bg-white p-6 space-y-4">
-            <div className="border-b-2 border-black pb-3">
-              <h2 className="text-xs font-black uppercase tracking-widest text-black">
+          <div className="lg:col-span-5 tile rounded-3xl bg-white p-6 shadow-sm border border-black/[0.04] space-y-4">
+            <div className="border-b border-black/[0.06] pb-3">
+              <h2 className="text-sm font-bold tracking-tight text-[var(--ink)]">
                 5-YEAR LAND COVER TRANSITION FLOWS
               </h2>
             </div>
-            <div className="divide-y-2 divide-black">
+            <div className="divide-y divide-black/[0.06]">
               {payload.transitions.map((tr: any, i: number) => (
-                <div key={i} className="py-3 space-y-1 hover:bg-black hover:text-white transition-none group px-2">
-                  <div className="flex items-center justify-between text-xs font-black uppercase">
+                <div key={i} className="py-3 px-2 rounded-xl hover:bg-[var(--canvas)] transition-colors space-y-1 group">
+                  <div className="flex items-center justify-between text-xs font-bold text-[var(--ink)]">
                     <span>
                       {tr.fromClass} → {tr.toClass}
                     </span>
-                    <span className="font-mono text-[#FF0000] tabular-nums">
+                    <span className="font-mono text-[var(--critical)] tabular-nums">
                       {tr.areaKm2} KM²
                     </span>
                   </div>
-                  <div className="text-[11px] text-[#4B5563] group-hover:text-[#D1D5DB]">{tr.driver}</div>
+                  <div className="text-[11px] text-[var(--text-muted)]">{tr.driver}</div>
                 </div>
               ))}
             </div>
@@ -174,53 +167,55 @@ export function EnvironmentalAnalytics() {
         </div>
       ) : (
         <>
-          {/* Summary KPI Ribbon */}
+          {/* Summary KPI Bento Ribbon */}
           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="border-2 border-black p-5 bg-white hover:bg-black hover:text-white transition-none group">
-              <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+            <div className="tile tile-interactive p-5 rounded-3xl bg-white border border-black/[0.04] shadow-sm hover:scale-[1.02] transition-all group">
+              <div className="text-xs font-semibold text-[var(--text-muted)]">
                 MUNICIPAL MEAN
               </div>
               <div className="mt-2 flex items-baseline gap-2">
-                <span className="text-3xl font-black tabular-nums">
+                <span className="text-3xl font-bold tracking-tight text-[var(--ink)] tabular-nums">
                   {payload.currentValue}
                 </span>
-                <span className="text-xs font-mono font-bold text-[#4B5563] group-hover:text-[#D1D5DB]">
+                <span className="text-xs font-medium text-[var(--text-muted)]">
                   {payload.unit}
                 </span>
               </div>
             </div>
 
-            <div className="border-2 border-black p-5 bg-white hover:bg-black hover:text-white transition-none group">
-              <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+            <div className="tile tile-interactive p-5 rounded-3xl bg-white border border-black/[0.04] shadow-sm hover:scale-[1.02] transition-all group">
+              <div className="text-xs font-semibold text-[var(--text-muted)]">
                 HISTORICAL BASELINE
               </div>
               <div className="mt-2 flex items-baseline gap-2">
-                <span className="text-3xl font-black tabular-nums">
+                <span className="text-3xl font-bold tracking-tight text-[var(--ink)] tabular-nums">
                   {payload.baselineValue}
                 </span>
-                <span className="text-xs font-mono font-bold text-[#4B5563] group-hover:text-[#D1D5DB]">
+                <span className="text-xs font-medium text-[var(--text-muted)]">
                   {payload.unit}
                 </span>
               </div>
             </div>
 
-            <div className="border-2 border-black p-5 bg-white hover:bg-black hover:text-white transition-none group">
-              <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+            <div className="tile tile-interactive p-5 rounded-3xl bg-white border border-black/[0.04] shadow-sm hover:scale-[1.02] transition-all group">
+              <div className="text-xs font-semibold text-[var(--text-muted)]">
                 RISK CLASSIFICATION
               </div>
-              <div
-                className={`mt-2 text-2xl font-black uppercase ${
-                  payload.riskClassification === 'critical'
-                    ? 'text-[#FF0000]'
-                    : 'text-black group-hover:text-white'
-                }`}
-              >
-                {payload.riskClassification}
+              <div className="mt-2">
+                <span
+                  className={`text-xs font-bold uppercase px-2.5 py-1 rounded-full ${
+                    payload.riskClassification === 'critical'
+                      ? 'bg-rose-50 text-[var(--critical)] border border-rose-200'
+                      : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                  }`}
+                >
+                  {payload.riskClassification}
+                </span>
               </div>
             </div>
 
-            <div className="border-2 border-black p-5 bg-white hover:bg-black hover:text-white transition-none group">
-              <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+            <div className="tile tile-interactive p-5 rounded-3xl bg-white border border-black/[0.04] shadow-sm hover:scale-[1.02] transition-all group">
+              <div className="text-xs font-semibold text-[var(--text-muted)]">
                 {payload.uhiIntensityCelsius
                   ? 'PEAK UHI CONTRAST'
                   : payload.aqiAverage
@@ -229,7 +224,7 @@ export function EnvironmentalAnalytics() {
                   ? 'EXTENT VARIANCE'
                   : 'MONITORED WARDS'}
               </div>
-              <div className="mt-2 text-3xl font-black tabular-nums">
+              <div className="mt-2 text-3xl font-bold tracking-tight text-[var(--ink)] tabular-nums">
                 {payload.uhiIntensityCelsius
                   ? `+${payload.uhiIntensityCelsius} °C`
                   : payload.aqiAverage
@@ -244,63 +239,61 @@ export function EnvironmentalAnalytics() {
           {/* Charts Grid */}
           <section className="grid grid-cols-1 xl:grid-cols-12 gap-6">
             {/* Historical Trend */}
-            <div className="xl:col-span-7 border-2 border-black bg-white p-6">
-              <div className="mb-4 border-b-2 border-black pb-3">
-                <h2 className="text-xs font-black uppercase tracking-widest text-black">
+            <div className="xl:col-span-7 tile rounded-3xl bg-white p-6 shadow-sm border border-black/[0.04]">
+              <div className="mb-4 border-b border-black/[0.06] pb-3">
+                <h2 className="text-sm font-bold tracking-tight text-[var(--ink)]">
                   45-DAY HISTORICAL TRAJECTORY — {payload.indicator}
                 </h2>
-                <p className="text-[10px] font-mono text-[#4B5563] uppercase mt-0.5">
-                  DAILY COMPOSITE TIME-SERIES ALIGNED TO MUNICIPAL GRID
+                <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                  Daily composite time-series aligned to municipal grid
                 </p>
               </div>
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   {activeTab === 'lst' ? (
                     <LineChart data={payload.history} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                      <XAxis dataKey="date" stroke="#000000" fontSize={10} fontStyle="bold" tickFormatter={(d) => d.slice(5)} />
-                      <YAxis stroke="#000000" fontSize={10} domain={['auto', 'auto']} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
+                      <XAxis dataKey="date" stroke="#8E8E93" fontSize={10} tickFormatter={(d) => d.slice(5)} />
+                      <YAxis stroke="#8E8E93" fontSize={10} domain={['auto', 'auto']} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: '#FFFFFF',
-                          borderColor: '#000000',
-                          borderWidth: '2px',
-                          borderRadius: '0px',
-                          fontSize: '11px',
-                          fontWeight: 'bold',
+                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                          borderColor: 'rgba(0, 0, 0, 0.08)',
+                          borderRadius: '1rem',
+                          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+                          fontSize: '12px',
                         }}
                       />
                       <Line
                         type="monotone"
                         dataKey="value"
                         name={`${payload.indicator} (${payload.unit})`}
-                        stroke="#000000"
+                        stroke="#007AFF"
                         strokeWidth={2.5}
                         dot={false}
                       />
                     </LineChart>
                   ) : (
                     <AreaChart data={payload.history} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                      <XAxis dataKey="date" stroke="#000000" fontSize={10} fontStyle="bold" tickFormatter={(d) => d.slice(5)} />
-                      <YAxis stroke="#000000" fontSize={10} domain={['auto', 'auto']} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
+                      <XAxis dataKey="date" stroke="#8E8E93" fontSize={10} tickFormatter={(d) => d.slice(5)} />
+                      <YAxis stroke="#8E8E93" fontSize={10} domain={['auto', 'auto']} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: '#FFFFFF',
-                          borderColor: '#000000',
-                          borderWidth: '2px',
-                          borderRadius: '0px',
-                          fontSize: '11px',
-                          fontWeight: 'bold',
+                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                          borderColor: 'rgba(0, 0, 0, 0.08)',
+                          borderRadius: '1rem',
+                          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+                          fontSize: '12px',
                         }}
                       />
                       <Area
                         type="monotone"
                         dataKey="value"
                         name={`${payload.indicator} (${payload.unit})`}
-                        stroke="#000000"
+                        stroke="#007AFF"
                         strokeWidth={2.5}
-                        fill="#000000"
+                        fill="#007AFF"
                         fillOpacity={0.15}
                       />
                     </AreaChart>
@@ -310,42 +303,40 @@ export function EnvironmentalAnalytics() {
             </div>
 
             {/* Ward Comparison Bar Chart */}
-            <div className="xl:col-span-5 border-2 border-black bg-white p-6">
-              <div className="mb-4 border-b-2 border-black pb-3">
-                <h2 className="text-xs font-black uppercase tracking-widest text-black">
+            <div className="xl:col-span-5 tile rounded-3xl bg-white p-6 shadow-sm border border-black/[0.04]">
+              <div className="mb-4 border-b border-black/[0.06] pb-3">
+                <h2 className="text-sm font-bold tracking-tight text-[var(--ink)]">
                   WARD GEOGRAPHIC DISTRIBUTION
                 </h2>
-                <p className="text-[10px] font-mono text-[#4B5563] uppercase mt-0.5">
-                  CURRENT OBSERVATION VS HISTORICAL BASELINE
+                <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                  Current observation vs historical baseline
                 </p>
               </div>
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={payload.wards} margin={{ top: 8, right: 8, left: -16, bottom: 24 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
                     <XAxis
                       dataKey="name"
-                      stroke="#000000"
+                      stroke="#8E8E93"
                       fontSize={10}
-                      fontStyle="bold"
                       interval={0}
                       angle={-18}
                       textAnchor="end"
                       tickFormatter={(v: string) => v.split(' ')[0]}
                     />
-                    <YAxis stroke="#000000" fontSize={10} />
+                    <YAxis stroke="#8E8E93" fontSize={10} />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: '#FFFFFF',
-                        borderColor: '#000000',
-                        borderWidth: '2px',
-                        borderRadius: '0px',
-                        fontSize: '11px',
-                        fontWeight: 'bold',
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        borderColor: 'rgba(0, 0, 0, 0.08)',
+                        borderRadius: '1rem',
+                        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+                        fontSize: '12px',
                       }}
                     />
-                    <Bar dataKey="value" name={`Current (${payload.unit})`} fill="#000000" maxBarSize={20} />
-                    <Bar dataKey="baseline" name={`Baseline (${payload.unit})`} fill="#9CA3AF" maxBarSize={20} />
+                    <Bar dataKey="value" name={`Current (${payload.unit})`} fill="#007AFF" radius={[6, 6, 0, 0]} maxBarSize={20} />
+                    <Bar dataKey="baseline" name={`Baseline (${payload.unit})`} fill="#D1D5DB" radius={[6, 6, 0, 0]} maxBarSize={20} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -354,30 +345,30 @@ export function EnvironmentalAnalytics() {
 
           {/* Insights + Ward Hotspot Table */}
           <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-4 border-2 border-black bg-white p-6 space-y-4">
-              <h2 className="text-xs font-black uppercase tracking-widest text-black border-b-2 border-black pb-2">
+            <div className="lg:col-span-4 tile rounded-3xl bg-white p-6 shadow-sm border border-black/[0.04] space-y-4">
+              <h2 className="text-sm font-bold tracking-tight text-[var(--ink)] border-b border-black/[0.06] pb-2">
                 KEY ENVIRONMENTAL INSIGHTS
               </h2>
-              <ul className="space-y-3 text-xs text-[#4B5563] leading-relaxed">
+              <ul className="space-y-3 text-xs text-[var(--text-muted)] leading-relaxed">
                 {(payload.insights || []).map((line: string, i: number) => (
-                  <li key={i} className="pb-3 border-b border-black/20 last:border-b-0 last:pb-0 font-medium">
+                  <li key={i} className="pb-3 border-b border-black/[0.06] last:border-b-0 last:pb-0 font-normal">
                     {line}
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="lg:col-span-8 border-2 border-black bg-white overflow-hidden">
-              <div className="px-6 py-4 border-b-2 border-black bg-black text-white">
-                <h2 className="text-xs font-black uppercase tracking-widest text-white">
+            <div className="lg:col-span-8 tile rounded-3xl bg-white p-6 shadow-sm border border-black/[0.04] overflow-hidden">
+              <div className="pb-3 border-b border-black/[0.06] mb-2">
+                <h2 className="text-sm font-bold tracking-tight text-[var(--ink)]">
                   WARD-LEVEL HOTSPOT TELEMETRY
                 </h2>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#E5E7EB] text-[10px] font-mono font-black uppercase text-black border-b-2 border-black">
+                  <thead className="text-[11px] font-semibold text-[var(--text-muted)] border-b border-black/[0.06]">
                     <tr>
-                      <th className="px-5 py-3">MUNICIPAL WARD</th>
+                      <th className="py-2.5 px-3">MUNICIPAL WARD</th>
                       <th className="px-5 py-3">COORDINATES</th>
                       <th className="px-5 py-3 text-right">CURRENT</th>
                       <th className="px-5 py-3 text-right">BASELINE</th>
