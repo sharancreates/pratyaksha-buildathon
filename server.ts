@@ -2,7 +2,6 @@ import express from 'express';
 import axios from 'axios';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createServer as createViteServer } from 'vite';
 import {
   getMunicipality,
   MUNICIPALITIES,
@@ -687,6 +686,7 @@ async function startServer() {
   // Mount Vite middleware in development or static dist in production
   const isProd = process.env.NODE_ENV === 'production';
   if (!isProd) {
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true, hmr: false },
       appType: 'spa',
