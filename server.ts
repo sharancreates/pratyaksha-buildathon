@@ -217,55 +217,6 @@ async function startServer() {
     });
   });
 
-  // =========================================================================
-  // PYTHON BACKEND REVERSE PROXY ROUTE (/api/py/*)
-  // =========================================================================
-  app.all('/api/py/*', async (req, res) => {
-    // Forward /api/py/xyz -> ${PYTHON_SERVICE_URL}/api/xyz
-    const targetPath = req.originalUrl.replace(/^\/api\/py/, '/api');
-    const targetUrl = `${PYTHON_SERVICE_URL.replace(/\/$/, '')}${targetPath}`;
-
-    try {
-      const headers: Record<string, string> = {
-        Accept: 'application/json',
-      };
-      if (req.headers['content-type']) {
-        headers['Content-Type'] = req.headers['content-type'] as string;
-      }
-      if (req.headers['authorization']) {
-        headers['Authorization'] = req.headers['authorization'] as string;
-      }
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
-
-      const fetchOptions: RequestInit = {
-        method: req.method,
-        headers,
-        signal: controller.signal,
-      };
-
-      if (['POST', 'PUT', 'PATCH'].includes(req.method) && req.body) {
-        fetchOptions.body = JSON.stringify(req.body);
-      }
-
-      const pyResponse = await fetch(targetUrl, fetchOptions);
-      clearTimeout(timeoutId);
-
-      const data = await pyResponse.text();
-      res.status(pyResponse.status);
-      res.setHeader('Content-Type', pyResponse.headers.get('content-type') || 'application/json');
-      return res.send(data);
-    } catch (err: any) {
-      return res.status(503).json({
-        error: 'Python Geospatial Backend Unreachable',
-        targetUrl,
-        message: err.message,
-        fallbackMode: 'DEMO_SYNTHETIC_ACTIVE',
-      });
-    }
-  });
-
   app.get('/api/system/status', (_req, res) => {
     res.json({
       platform: 'PRATYAKSHA',
@@ -693,7 +644,6 @@ async function startServer() {
   // =========================================================================
   // PYTHON FASTAPI GEOSPATIAL REVERSE PROXY
   // =========================================================================
-  const GEO_BACKEND_URL = process.env.GEO_BACKEND_URL || 'http://localhost:8000';
   app.use('/api/py', async (req, res) => {
     try {
       const targetUrl = `${GEO_BACKEND_URL}/api${req.url}`;
@@ -724,6 +674,7 @@ async function startServer() {
         error: 'Python GIS Backend unreachable',
         backendUrl: GEO_BACKEND_URL,
         dataMode: 'DEMO_FALLBACK',
+        fallbackMode: 'DEMO_SYNTHETIC_ACTIVE',
         message: axiosErr.message || 'Service unavailable',
       });
     }

@@ -96,7 +96,7 @@ test('Web BFF Reverse Proxy & Fallback Routing in server.ts', () => {
   const content = fs.readFileSync(serverPath, 'utf-8');
 
   assert.match(content, /PYTHON_SERVICE_URL/, 'server.ts must define PYTHON_SERVICE_URL');
-  assert.match(content, /app\.all\('\/api\/py\/\*'/, 'server.ts must declare /api/py/* reverse proxy route');
+  assert.match(content, /app\.use\('\/api\/py'/, 'server.ts must declare /api/py reverse proxy route');
   assert.match(content, /DEMO_SYNTHETIC_ACTIVE/, 'server.ts must handle backend unreachability with synthetic fallback');
   assert.match(content, /pythonBackend:/, 'server.ts /api/health must report pythonBackend connectivity');
 });
