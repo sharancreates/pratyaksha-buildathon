@@ -1,0 +1,256 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Authenticated municipal environmental officer profile with isolated PII.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 254
+        },
+        "department": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "municipalityId": {
+          "type": "string",
+          "enum": ["ahmedabad", "delhi", "mumbai", "bengaluru", "chennai"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "displayName", "email", "department", "municipalityId", "createdAt", "updatedAt"]
+    },
+    "ActionPlan": {
+      "title": "ActionPlan",
+      "description": "Persisted municipal Environment Action Plan generated from satellite and ML evidence.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "municipalityId": {
+          "type": "string",
+          "enum": ["ahmedabad", "delhi", "mumbai", "bengaluru", "chennai"]
+        },
+        "municipalityName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "title": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 180
+        },
+        "executiveSummary": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 2000
+        },
+        "healthScore": {
+          "type": "number"
+        },
+        "anomalyCount": {
+          "type": "integer"
+        },
+        "recommendationCount": {
+          "type": "integer"
+        },
+        "priorityActions": {
+          "type": "array"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "approved", "archived"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ownerId",
+        "municipalityId",
+        "municipalityName",
+        "title",
+        "executiveSummary",
+        "healthScore",
+        "anomalyCount",
+        "recommendationCount",
+        "priorityActions",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AnomalyReview": {
+      "title": "AnomalyReview",
+      "description": "Officer review and municipal intervention tracking record for a detected environmental anomaly.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "municipalityId": {
+          "type": "string",
+          "enum": ["ahmedabad", "delhi", "mumbai", "bengaluru", "chennai"]
+        },
+        "anomalyId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "indicator": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["low", "moderate", "high", "critical"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["open", "investigating", "mitigated", "resolved"]
+        },
+        "assignedDepartment": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ownerId",
+        "municipalityId",
+        "anomalyId",
+        "indicator",
+        "severity",
+        "status",
+        "assignedDepartment",
+        "notes",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ProcessingJob": {
+      "title": "ProcessingJob",
+      "description": "Audit log of satellite ingestion, harmonization, and ML execution jobs.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "municipalityId": {
+          "type": "string",
+          "enum": ["ahmedabad", "delhi", "mumbai", "bengaluru", "chennai"]
+        },
+        "mission": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 64
+        },
+        "jobType": {
+          "type": "string",
+          "enum": ["ingest", "harmonize", "anomaly_scan", "segmentation"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["queued", "running", "completed"]
+        },
+        "rawCount": {
+          "type": "integer"
+        },
+        "processedCount": {
+          "type": "integer"
+        },
+        "failedCount": {
+          "type": "integer"
+        },
+        "durationMs": {
+          "type": "integer"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ownerId",
+        "municipalityId",
+        "mission",
+        "jobType",
+        "status",
+        "rawCount",
+        "processedCount",
+        "failedCount",
+        "durationMs",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private municipal officer profiles keyed by Firebase Auth UID."
+    },
+    "/action_plans/{planId}": {
+      "schema": { "$ref": "#/entities/ActionPlan" },
+      "description": "Owner-scoped generated Environment Action Plans."
+    },
+    "/anomaly_reviews/{reviewId}": {
+      "schema": { "$ref": "#/entities/AnomalyReview" },
+      "description": "Owner-scoped anomaly review and intervention tracking records."
+    },
+    "/processing_jobs/{jobId}": {
+      "schema": { "$ref": "#/entities/ProcessingJob" },
+      "description": "Owner-scoped satellite pipeline processing job history."
+    }
+  }
+}

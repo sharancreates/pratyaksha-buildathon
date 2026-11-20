@@ -1,0 +1,261 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global safety net: default deny all paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Core primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isVerified() && (
+        request.auth.token.email == 'sharanyanagar2@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidMunicipality(m) {
+      return m is string && m in ['ahmedabad', 'delhi', 'mumbai', 'bengaluru', 'chennai'];
+    }
+
+    // Entity validation blueprints
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['uid', 'displayName', 'email', 'department', 'municipalityId', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'displayName', 'email', 'department', 'municipalityId', 'createdAt', 'updatedAt'])
+        && isValidId(data.uid)
+        && data.uid == request.auth.uid
+        && data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 120
+        && data.email is string && data.email.size() >= 3 && data.email.size() <= 254
+        && data.department is string && data.department.size() >= 1 && data.department.size() <= 120
+        && isValidMunicipality(data.municipalityId)
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidPriorityActions(arr) {
+      return arr is list
+        && arr.size() >= 1
+        && arr.size() <= 10
+        && arr[0] is string
+        && arr[0].size() >= 1
+        && arr[0].size() <= 240;
+    }
+
+    function isValidActionPlan(data) {
+      return data.keys().hasAll([
+          'ownerId', 'municipalityId', 'municipalityName', 'title',
+          'executiveSummary', 'healthScore', 'anomalyCount',
+          'recommendationCount', 'priorityActions', 'status',
+          'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'ownerId', 'municipalityId', 'municipalityName', 'title',
+          'executiveSummary', 'healthScore', 'anomalyCount',
+          'recommendationCount', 'priorityActions', 'status',
+          'createdAt', 'updatedAt'
+        ])
+        && isValidId(data.ownerId)
+        && (data.ownerId == request.auth.uid || isAdmin())
+        && isValidMunicipality(data.municipalityId)
+        && data.municipalityName is string && data.municipalityName.size() >= 1 && data.municipalityName.size() <= 80
+        && data.title is string && data.title.size() >= 3 && data.title.size() <= 180
+        && data.executiveSummary is string && data.executiveSummary.size() >= 10 && data.executiveSummary.size() <= 2000
+        && data.healthScore is number && data.healthScore >= 0 && data.healthScore <= 100
+        && data.anomalyCount is int && data.anomalyCount >= 0 && data.anomalyCount <= 500
+        && data.recommendationCount is int && data.recommendationCount >= 0 && data.recommendationCount <= 100
+        && isValidPriorityActions(data.priorityActions)
+        && data.status is string && data.status in ['draft', 'approved', 'archived']
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidAnomalyReview(data) {
+      return data.keys().hasAll([
+          'ownerId', 'municipalityId', 'anomalyId', 'indicator',
+          'severity', 'status', 'assignedDepartment', 'notes',
+          'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'ownerId', 'municipalityId', 'anomalyId', 'indicator',
+          'severity', 'status', 'assignedDepartment', 'notes',
+          'createdAt', 'updatedAt'
+        ])
+        && isValidId(data.ownerId)
+        && (data.ownerId == request.auth.uid || isAdmin())
+        && isValidMunicipality(data.municipalityId)
+        && isValidId(data.anomalyId)
+        && data.indicator is string && data.indicator.size() >= 2 && data.indicator.size() <= 80
+        && data.severity is string && data.severity in ['low', 'moderate', 'high', 'critical']
+        && data.status is string && data.status in ['open', 'investigating', 'mitigated', 'resolved']
+        && data.assignedDepartment is string && data.assignedDepartment.size() >= 2 && data.assignedDepartment.size() <= 120
+        && data.notes is string && data.notes.size() <= 1000
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidProcessingJob(data) {
+      return data.keys().hasAll([
+          'ownerId', 'municipalityId', 'mission', 'jobType',
+          'status', 'rawCount', 'processedCount', 'failedCount',
+          'durationMs', 'createdAt'
+        ])
+        && data.keys().hasOnly([
+          'ownerId', 'municipalityId', 'mission', 'jobType',
+          'status', 'rawCount', 'processedCount', 'failedCount',
+          'durationMs', 'createdAt'
+        ])
+        && isValidId(data.ownerId)
+        && data.ownerId == request.auth.uid
+        && isValidMunicipality(data.municipalityId)
+        && data.mission is string && data.mission.size() >= 2 && data.mission.size() <= 64
+        && data.jobType is string && data.jobType in ['ingest', 'harmonize', 'anomaly_scan', 'segmentation']
+        && data.status is string && data.status in ['queued', 'running', 'completed']
+        && data.rawCount is int && data.rawCount >= 0 && data.rawCount <= 100000
+        && data.processedCount is int && data.processedCount >= 0 && data.processedCount <= 100000
+        && data.failedCount is int && data.failedCount >= 0 && data.failedCount <= 100000
+        && data.durationMs is int && data.durationMs >= 0 && data.durationMs <= 3600000
+        && data.createdAt is timestamp;
+    }
+
+    // Collection: /users/{userId} — Strict PII isolation
+    match /users/{userId} {
+      allow get: if isSignedIn() && isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if false;
+      allow create: if isVerified()
+        && isValidId(userId)
+        && isOwner(userId)
+        && isValidUserProfile(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isVerified()
+        && isValidId(userId)
+        && isValidUserProfile(incoming())
+        && (
+          isAdmin() || (
+            isOwner(userId)
+            && incoming().uid == existing().uid
+            && incoming().createdAt == existing().createdAt
+            && incoming().updatedAt == request.time
+            && incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'department', 'municipalityId', 'updatedAt'])
+          )
+        );
+      allow delete: if isAdmin() && isValidId(userId);
+    }
+
+    // Collection: /action_plans/{planId} — Persisted Municipal Environment Action Plans
+    match /action_plans/{planId} {
+      allow get: if isSignedIn() && isValidId(planId) && (existing().ownerId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (resource.data.ownerId == request.auth.uid || isAdmin());
+      allow create: if isVerified()
+        && isValidId(planId)
+        && isValidActionPlan(incoming())
+        && incoming().ownerId == request.auth.uid
+        && incoming().status == 'draft'
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isVerified()
+        && isValidId(planId)
+        && isValidActionPlan(incoming())
+        && (
+          isAdmin() || (
+            existing().ownerId == request.auth.uid
+            && existing().status != 'archived'
+            && incoming().ownerId == existing().ownerId
+            && incoming().createdAt == existing().createdAt
+            && incoming().updatedAt == request.time
+            && (
+              incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']) ||
+              incoming().diff(existing()).affectedKeys().hasOnly(['title', 'executiveSummary', 'priorityActions', 'updatedAt'])
+            )
+          )
+        );
+      allow delete: if isVerified() && isValidId(planId) && (existing().ownerId == request.auth.uid || isAdmin());
+    }
+
+    // Collection: /anomaly_reviews/{reviewId} — Anomaly investigation & mitigation tracking
+    match /anomaly_reviews/{reviewId} {
+      allow get: if isSignedIn() && isValidId(reviewId) && (existing().ownerId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (resource.data.ownerId == request.auth.uid || isAdmin());
+      allow create: if isVerified()
+        && isValidId(reviewId)
+        && isValidAnomalyReview(incoming())
+        && incoming().ownerId == request.auth.uid
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isVerified()
+        && isValidId(reviewId)
+        && isValidAnomalyReview(incoming())
+        && (
+          isAdmin() || (
+            existing().ownerId == request.auth.uid
+            && existing().status != 'resolved'
+            && incoming().ownerId == existing().ownerId
+            && incoming().anomalyId == existing().anomalyId
+            && incoming().createdAt == existing().createdAt
+            && incoming().updatedAt == request.time
+            && (
+              incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']) ||
+              incoming().diff(existing()).affectedKeys().hasOnly(['status', 'assignedDepartment', 'notes', 'updatedAt'])
+            )
+          )
+        );
+      allow delete: if isVerified() && isValidId(reviewId) && (existing().ownerId == request.auth.uid || isAdmin());
+    }
+
+    // Collection: /processing_jobs/{jobId} — Immutable audit log of satellite pipeline runs
+    match /processing_jobs/{jobId} {
+      allow get: if isSignedIn() && isValidId(jobId) && (existing().ownerId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (resource.data.ownerId == request.auth.uid || isAdmin());
+      allow create: if isVerified()
+        && isValidId(jobId)
+        && isValidProcessingJob(incoming())
+        && incoming().ownerId == request.auth.uid
+        && incoming().createdAt == request.time;
+      allow update: if isVerified()
+        && isValidId(jobId)
+        && isValidProcessingJob(incoming())
+        && (
+          isAdmin() || (
+            existing().ownerId == request.auth.uid
+            && existing().status != 'completed'
+            && incoming().ownerId == existing().ownerId
+            && incoming().createdAt == existing().createdAt
+            && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'processedCount', 'failedCount', 'durationMs'])
+          )
+        );
+      allow delete: if isAdmin() && isValidId(jobId);
+    }
+
+    // Admin registry: strictly read-only for self-check, no client writes
+    match /admins/{adminId} {
+      allow get: if isSignedIn() && isValidId(adminId) && request.auth.uid == adminId;
+      allow list, write: if false;
+    }
+  }
+}
