@@ -40,10 +40,32 @@ PRATYAKSHA is an enterprise B2B Satellite Environmental Intelligence Platform bu
 
 ## Architecture & Technology Snapshot
 - **Frontend**: React 19, TypeScript 5.8, Tailwind CSS v4, MapLibre GL JS, Recharts, Framer Motion, jsPDF
-- **BFF / Local Server**: Express 5 on Node.js via `tsx`, in-memory TypeScript analytics engines
-- **Heavy Geospatial Backend**: FastAPI, Python 3.11, Earth Engine API, PyTorch, Scikit-Learn, Prophet
-- **Persistence**: PostgreSQL 15 + PostGIS (relational/spatial), Google Cloud Firestore (documents/audit)
+- **BFF / Web Runtime**: Express 5 on Node.js 24, Vite SSR/static bundle serving, in-memory analytical engines
+- **Heavy Geospatial Backend**: FastAPI, Python 3.11, Google Earth Engine API, PyTorch, Scikit-Learn, Prophet
+- **Cloud Infrastructure (GCP - `asia-south1` Mumbai)**:
+  - **Google Cloud Run**: Serverless container orchestration for dual services (`pratyaksha-web-service` + `pratyaksha-geo-service`)
+  - **Google Cloud SQL**: Managed PostgreSQL 15 with PostGIS spatial extensions
+  - **Google Cloud Firestore**: Document persistence for action plans, triage reviews, and processing logs with CEL security rules
+  - **Google Secret Manager**: Secure credential injection for Earth Engine keys and database secrets
+  - **Google Artifact Registry & Cloud Build**: Multi-stage OCI container image registry and automated CI/CD pipeline
 - **Security**: CEL Firestore Security Rules v2 enforcing PII isolation, terminal locking, and immutable audit logs
+
+---
+
+## Milestone Roadmap History
+
+### Milestone 1: Production Readiness & Persistence Architecture (COMPLETED)
+- **Phase 1: Core Platform Foundation**: Built and delivered 7 complete full-stack modules with MapLibre GL geospatial rendering and deterministic smart cities telemetry.
+- **Phase 2: Security & Test Automation Harness**: Implemented in-process security rules evaluator covering the "Dirty Dozen" adversarial security test cases with 31/31 passing unit tests.
+
+### Milestone 2: GCP Cloud-Native Production Deployment (ACTIVE)
+- **Goal**: Package, configure, provision, and deploy PRATYAKSHA to Google Cloud Platform (`asia-south1` Mumbai) using dual Cloud Run serverless microservices, Cloud SQL PostGIS, Cloud Firestore, Secret Manager, and automated Cloud Build CI/CD.
+- **Target Phases**:
+  - **Phase 3**: Multi-Service Containerization & Local Compose Verification
+  - **Phase 4**: GCP IAM Security, Artifact Registry & Secret Manager Architecture
+  - **Phase 5**: Cloud SQL PostGIS & Cloud Firestore Database Provisioning
+  - **Phase 6**: Cloud Run Dual-Service Deployment & Serverless VPC Networking
+  - **Phase 7**: Cloud Build CI/CD Automation & Production Verification
 
 ---
 

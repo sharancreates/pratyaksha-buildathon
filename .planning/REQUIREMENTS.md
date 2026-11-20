@@ -1,6 +1,6 @@
 # Requirements Specification
 
-## Status: Approved Baseline (Brownfield Onboarded)
+## Status: Approved Baseline + Milestone 2 (GCP Deployment)
 
 ---
 
@@ -68,3 +68,32 @@
 
 - **REQ-RES-01 (Deterministic Demo Fallback)**: In the absence of live GEE credentials, PostgreSQL database, or PyTorch weights, all platform features must function reliably with labeled synthetic demonstration data.
 - **REQ-RES-02 (Sub-Second UI Response)**: Dashboard filtering and city switching must render instantaneously without blocking UI threads.
+
+---
+
+## 8. Milestone 2: GCP Cloud-Native Deployment Requirements
+
+- **REQ-DEP-01 (Multi-Stage Docker Packaging)**:
+  - Web BFF container (`Dockerfile`): Multi-stage build producing an optimized Node 24 Alpine image bundling compiled React 19 static assets and Express 5 server.
+  - Python GIS container (`backend/Dockerfile`): Multi-stage Debian Bookworm build packaging FastAPI, Earth Engine API, Scikit-Learn, PyTorch CPU, and Uvicorn runtime.
+- **REQ-DEP-02 (Local Docker Compose Verification)**:
+  - System shall provide `docker-compose.yml` orchestrating `web`, `backend`, and `postgis` services with health check dependencies and volume mounting for rapid offline validation.
+- **REQ-DEP-03 (Google Artifact Registry Ingestion)**:
+  - Container images shall be tagged and pushed to an OCI-compliant Google Artifact Registry repository (`asia-south1-docker.pkg.dev/<project>/pratyaksha-repo/`).
+- **REQ-DEP-04 (Cloud Run Dual-Service Architecture)**:
+  - Deploy `pratyaksha-web-service` and `pratyaksha-geo-service` to Google Cloud Run in `asia-south1` (Mumbai).
+  - Configure auto-scaling ($0 \to 10$ instances) with custom CPU/memory thresholds ($1\text{ vCPU}/512\text{ MiB}$ for Web, $2\text{ vCPU}/2\text{ GiB}$ for Geo).
+- **REQ-DEP-05 (Cloud SQL PostGIS Provisioning)**:
+  - Provision a Cloud SQL PostgreSQL 15 instance with PostGIS spatial extensions enabled.
+  - Execute spatial migrations (`001_init_postgis.sql`) initializing ward geometry polygons and spatial indices.
+- **REQ-DEP-06 (Cloud IAM & Workload Identity Least Privilege)**:
+  - Establish dedicated runtime Service Account (`sa-pratyaksha-runtime`) with scoped permissions: `roles/secretmanager.secretAccessor`, `roles/cloudsql.client`, `roles/datastore.user`, and Earth Engine access.
+- **REQ-DEP-07 (Secret Manager Credential Injection)**:
+  - Inject database connection strings, Earth Engine credentials, and Firebase configurations dynamically via Google Secret Manager without committing secrets to source control.
+- **REQ-DEP-08 (Serverless VPC Access & Service-to-Service Networking)**:
+  - Configure a Serverless VPC Access connector enabling private, low-latency communication between Cloud Run services and Cloud SQL without public internet egress.
+  - Route `/api/py/*` requests from Web BFF to Geo Backend over authenticated internal endpoints.
+- **REQ-DEP-09 (Cloud Build CI/CD Automation)**:
+  - Implement `cloudbuild.yaml` supporting automated build, unit testing, container compilation, and blue-green Cloud Run deployments triggered on Git commit.
+- **REQ-DEP-10 (Production Smoke Testing & Synthetic Fallback Assurance)**:
+  - System shall verify automated smoke test suites verifying HTTP 200 responses on `/api/health`, `/api/dashboard/overview`, and `/api/anomalies/ahmedabad` post-deployment, guaranteeing zero downtime if external GEE quotas fail.

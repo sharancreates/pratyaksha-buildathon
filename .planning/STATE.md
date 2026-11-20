@@ -2,21 +2,21 @@
 
 ## Current Context
 - **Project**: PRATYAKSHA — Unified Satellite Environmental Intelligence Platform
-- **Current Milestone**: Milestone 1 (Production Readiness & Persistence Architecture)
-- **Active Phase**: Phase 3 (Cloud Firestore & State Persistence)
-- **Status**: Phase 2 (Security & Test Automation Harness) executed and verified (31/31 tests passing). Ready for Phase 3 planning.
+- **Current Milestone**: Milestone 2 (GCP Cloud-Native Production Deployment)
+- **Active Phase**: Phase 3 (Multi-Service Containerization & Local Compose Verification)
+- **Status**: Milestone 1 (Foundation & Security Baseline) completed and verified. Milestone 2 initialized for Google Cloud Platform (`asia-south1` Mumbai) deployment using dual Cloud Run serverless services, Cloud SQL PostGIS, Cloud Firestore, and Cloud Build CI/CD.
 
 ---
 
-## Progress Overview
+## Milestone 2 Progress Overview
 
 | Phase | Description | Status |
 |-------|-------------|--------|
-| **Phase 1** | Core Platform Foundation (7 Modules, MapLibre, In-Memory ML) | Complete |
-| **Phase 2** | Security & Test Automation Harness | Complete (Verified) |
-| **Phase 3** | Cloud Firestore & State Persistence | Next (Ready to Plan) |
-| **Phase 4** | Python FastAPI & PostGIS Gateway | Queued |
-| **Phase 5** | Production Earth Engine Pipeline & Deployment | Queued |
+| **Phase 3** | Multi-Service Containerization & Local Compose Verification | Ready to Plan |
+| **Phase 4** | GCP IAM Security, Artifact Registry & Secret Manager | Queued |
+| **Phase 5** | Cloud SQL PostGIS & Cloud Firestore Database Provisioning | Queued |
+| **Phase 6** | Cloud Run Dual-Service Deployment & VPC Networking | Queued |
+| **Phase 7** | Cloud Build CI/CD Automation & Production Verification | Queued |
 
 ---
 
@@ -37,8 +37,17 @@
 - **ADR-05: In-Process Rules Invariant Evaluator for Continuous Testing**
   - *Decision*: Implement `rulesEvaluator.ts` mirroring `firestore.rules` predicates to execute the "Dirty Dozen" security assertions natively in Node/Vitest with $< 100\text{ms}$ execution time and zero external daemon prerequisites.
   - *Rationale*: Guarantees continuous regression testing in sandboxed CI pipelines where Java-based Firebase emulators are constrained.
+- **ADR-06: Dual-Service Serverless Cloud Run Hosting on GCP**
+  - *Decision*: Split the production cloud deployment into two independent Cloud Run services in `asia-south1`: `pratyaksha-web-service` (Node.js 24 React/Express BFF) and `pratyaksha-geo-service` (Python 3.11 FastAPI Geospatial/GEE Engine).
+  - *Rationale*: Cloud Run provides native zero-to-N auto-scaling, pay-per-request economics, and avoids cluster management overhead of GKE while providing isolated resource allocation (1 vCPU for Node, 2 vCPU for Python/PyTorch).
+- **ADR-07: Secret Manager & IAM Least Privilege with Synthetic Fallback**
+  - *Decision*: Use Google Secret Manager and dedicated Cloud Run service accounts (`sa-pratyaksha-runtime`) for GEE, PostGIS, and Firebase credentials, while strictly preserving the automatic fallback to synthetic telemetry if secrets are absent.
+  - *Rationale*: Prevents credential leaks in git/container layers while ensuring deployed instances never crash on startup if external GIS quotas or credentials are not yet configured.
+- **ADR-08: Serverless VPC Access for Cloud SQL PostGIS Connectivity**
+  - *Decision*: Connect Cloud Run services to Cloud SQL for PostgreSQL + PostGIS via a Serverless VPC Access connector using internal RFC 1918 private IPs or Unix sockets.
+  - *Rationale*: Eliminates public internet database exposure, reduces latency within `asia-south1`, and secures municipal environmental records.
 
 ---
 
 ## Immediate Next Steps
-1. Run `/gsd-plan-phase 3` to plan Phase 3 (Cloud Firestore & State Persistence).
+1. Run `/gsd-plan-phase 3` to plan Phase 3 (Multi-Service Containerization & Local Compose Verification).

@@ -1,6 +1,6 @@
 # Project Roadmap
 
-## Milestone 1: Production Readiness & Persistence Architecture
+## Milestone 1: Production Readiness & Persistence Architecture (COMPLETED)
 
 ### Phase Overview
 
@@ -8,9 +8,20 @@
 |-------|-------|------|--------|
 | **Phase 1** | Core Platform Foundation | 7 full-stack modules, MapLibre GL geospatial map, in-memory analytical engines, and 5-city smart cities dataset. | **COMPLETED** |
 | **Phase 2** | Security & Test Automation Harness | Wire automated test runner (`vitest` + `@firebase/rules-unit-testing`) to execute the "Dirty Dozen" security assertions and engine unit tests in CI. | **COMPLETED** |
-| **Phase 3** | Cloud Firestore & State Persistence | Connect UI to Cloud Firestore for live persistence of `/action_plans` and `/anomaly_reviews` with in-memory fallback. | **PLANNED** |
-| **Phase 4** | Python FastAPI & PostGIS Gateway | Implement proxy routing in `server.ts` to seamlessly delegate heavy GIS/ML tasks to FastAPI when available. | **PLANNED** |
-| **Phase 5** | Production Earth Engine Pipeline & Deployment | Multi-mission live Earth Engine pipeline, Docker containerization, and production municipal deployment guide. | **PLANNED** |
+
+---
+
+## Milestone 2: GCP Cloud-Native Production Deployment (ACTIVE)
+
+### Phase Overview
+
+| Phase | Title | Goal | Status |
+|-------|-------|------|--------|
+| **Phase 3** | Multi-Service Containerization & Local Compose Verification | Create optimized multi-stage Dockerfiles for Node Web BFF and Python FastAPI, plus unified `docker-compose.yml` with PostGIS. | **READY TO PLAN** |
+| **Phase 4** | GCP IAM Security, Artifact Registry & Secret Manager | Set up GCP project APIs, Artifact Registry repository, runtime Service Account with least-privilege IAM, and Secret Manager schemas. | **PLANNED** |
+| **Phase 5** | Cloud SQL PostGIS & Cloud Firestore Database Provisioning | Provision PostgreSQL 15 + PostGIS instance in `asia-south1`, execute spatial migrations, and verify Firestore production rules. | **PLANNED** |
+| **Phase 6** | Cloud Run Dual-Service Deployment & VPC Networking | Deploy Web BFF and Python GIS services to Cloud Run with Serverless VPC Connector and internal service-to-service proxying. | **PLANNED** |
+| **Phase 7** | Cloud Build CI/CD Automation & Production Verification | Establish automated `cloudbuild.yaml` deployment pipeline, execute live smoke testing, and draft municipal operations runbook. | **PLANNED** |
 
 ---
 
@@ -27,7 +38,7 @@
 - [x] Deterministic 5-city dataset (Ahmedabad, Delhi, Mumbai, Bengaluru, Chennai) with 90-day historical telemetry.
 - [x] Firestore security rules specification (`firestore.rules` and `security_spec.md`).
 
-### Phase 2: Security & Test Automation Harness
+### Phase 2: Security & Test Automation Harness (Completed Baseline)
 - [x] Add test harness and scripts to `package.json` and configure `vitest.config.ts`.
 - [x] Implement executable test runner executing all 12 "Dirty Dozen" adversarial security tests and positive assertions.
 - [x] Implement unit tests for `mlEngine.ts` (Isolation Forest bounds, DBSCAN clusters, consensus weights).
@@ -35,21 +46,34 @@
 - [x] Implement unit tests for `harmonizer.ts` and `segmentationEngine.ts`.
 - [x] Configure `npm test` script and verify clean exit in CI environment with 31/31 passing tests.
 
-### Phase 3: Cloud Firestore & State Persistence
-- [ ] Initialize Firebase Client SDK in `src/context/` or `src/services/firebase.ts`.
-- [ ] Wire `/action_plans` CRUD operations with Firestore when authenticated, falling back to local storage in demo mode.
-- [ ] Wire `/anomaly_reviews` triage review logging to Firestore with owner isolation.
-- [ ] Implement client-side auth state hook with email verification check.
-- [ ] Validate Firestore audit logging for `/processing_jobs`.
+---
 
-### Phase 4: Python FastAPI & PostGIS Gateway
-- [ ] Add reverse-proxy middleware to `server.ts` forwarding `/api/py/*` requests to FastAPI on `localhost:8000`.
-- [ ] Provide unified health probe checking both Node and Python backend availability.
-- [ ] Connect FastAPI endpoints to PostGIS database for spatial ward boundary and observation queries.
-- [ ] Align Python and Node data schemas for ML consensus and time-series predictions.
+### Phase 3: Multi-Service Containerization & Local Compose Verification
+- [ ] Implement multi-stage `Dockerfile` for Node.js 24 + Express + React 19 frontend/BFF with production minification.
+- [ ] Implement multi-stage `backend/Dockerfile` for Python 3.11 FastAPI backend with PyTorch CPU and Earth Engine client dependencies.
+- [ ] Author unified `docker-compose.yml` linking Web, FastAPI backend, and `postgis/postgis:15-3.4` database service.
+- [ ] Verify local containerized run with health checks (`/api/health`) and synthetic fallback assurance.
+- [ ] Add `.dockerignore` for both services to prevent bloat from node_modules, cache, and virtual environments.
 
-### Phase 5: Production Earth Engine Pipeline & Deployment
-- [ ] Document Google Cloud service account provisioning and GEE project enablement.
-- [ ] Containerize full application with Docker (`docker-compose.yml` for Node app, FastAPI, and PostGIS).
-- [ ] Export PyTorch EnvironmentalUNet model weights or ONNX graph for optimized inference.
-- [ ] Produce municipal commissioner operations and governance deployment manual.
+### Phase 4: GCP IAM Security, Artifact Registry & Secret Manager Architecture
+- [ ] Create GCP service enablement scripts for `run.googleapis.com`, `artifactregistry.googleapis.com`, `sqladmin.googleapis.com`, `secretmanager.googleapis.com`, and `earthengine.googleapis.com`.
+- [ ] Establish OCI Artifact Registry repository `pratyaksha-repo` in region `asia-south1`.
+- [ ] Define dedicated runtime service account `sa-pratyaksha-runtime` with minimal required IAM roles (`secretmanager.secretAccessor`, `cloudsql.client`, `datastore.user`).
+- [ ] Author Secret Manager configuration templates for `DATABASE_URL`, `GEE_SERVICE_ACCOUNT_KEY`, and `FIREBASE_CONFIG`.
+
+### Phase 5: Cloud SQL PostGIS & Cloud Firestore Database Provisioning
+- [ ] Formulate Cloud SQL PostgreSQL 15 provisioning commands with PostGIS spatial extension flags.
+- [ ] Verify execution of `backend/database/migrations/001_init_postgis.sql` on the managed instance.
+- [ ] Configure Cloud SQL Auth Proxy and Unix socket paths for container runtime connections.
+- [ ] Confirm Cloud Firestore native mode configuration in `asia-south1` and validate `firestore.rules` security policies.
+
+### Phase 6: Cloud Run Dual-Service Deployment & Serverless VPC Networking
+- [ ] Deploy `pratyaksha-geo-service` (Python FastAPI) to Cloud Run with environment variable and Secret Manager bindings.
+- [ ] Deploy `pratyaksha-web-service` (Node.js React/BFF) to Cloud Run with public ingress and auto-scaling rules.
+- [ ] Implement reverse-proxy delegation in `server.ts` forwarding `/api/py/*` requests to the internal Cloud Run geo service endpoint.
+- [ ] Configure Serverless VPC Access connector for private internal communication to Cloud SQL without public IP exposure.
+
+### Phase 7: Cloud Build CI/CD Automation & Production Verification
+- [ ] Author `cloudbuild.yaml` automated build and deploy pipeline with step-by-step test, build, push, and deploy tasks.
+- [ ] Develop end-to-end smoke verification script testing `/api/health`, `/api/dashboard/overview`, and `/api/anomalies/ahmedabad` on the live Cloud Run endpoint.
+- [ ] Write municipal commissioner operations runbook covering scaling policies, logs inspection, and credential rotation.
