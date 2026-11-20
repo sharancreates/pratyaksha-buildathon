@@ -1,0 +1,90 @@
+services:
+  # =========================================================================
+  # 1. PostGIS 15 Spatial Database Service
+  # =========================================================================
+  db:
+    image: postgis/postgis:15-3.4-alpine
+    container_name: pratyaksha-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pratyaksha
+      POSTGRES_USER: pratyaksha
+      POSTGRES_PASSWORD: pratyaksha_local_secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgis_data:/var/lib/postgresql/data
+      - ./backend/database/migrations/001_init_postgis.sql:/docker-entrypoint-initdb.d/001_init_postgis.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pratyaksha -d pratyaksha"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - pratyaksha-network
+
+  # =========================================================================
+  # 2. Python 3.11 FastAPI Geospatial & ML Service
+  # =========================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pratyaksha-backend
+    restart: unless-stopped
+    environment:
+      PORT: 8000
+      DEMO_MODE: "true"
+      DATABASE_URL: postgresql://pratyaksha:pratyaksha_local_secret@db:5432/pratyaksha
+      CORS_ORIGINS: http://localhost:3000,http://web:3000
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - pratyaksha-network
+
+  # =========================================================================
+  # 3. Node.js 24 Express Web BFF & React 19 Frontend
+  # =========================================================================
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pratyaksha-web
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      PYTHON_SERVICE_URL: http://backend:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - pratyaksha-network
+
+# ===========================================================================
+# NETWORKS & VOLUMES
+# ===========================================================================
+networks:
+  pratyaksha-network:
+    driver: bridge
+
+volumes:
+  postgis_data:

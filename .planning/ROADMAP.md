@@ -17,8 +17,8 @@
 
 | Phase | Title | Goal | Status |
 |-------|-------|------|--------|
-| **Phase 3** | Multi-Service Containerization & Local Compose Verification | Create optimized multi-stage Dockerfiles for Node Web BFF and Python FastAPI, plus unified `docker-compose.yml` with PostGIS. | **READY TO PLAN** |
-| **Phase 4** | GCP IAM Security, Artifact Registry & Secret Manager | Set up GCP project APIs, Artifact Registry repository, runtime Service Account with least-privilege IAM, and Secret Manager schemas. | **PLANNED** |
+| **Phase 3** | Multi-Service Containerization & Local Compose Verification | Create optimized multi-stage Dockerfiles for Node Web BFF and Python FastAPI, plus unified `docker-compose.yml` with PostGIS. | **COMPLETED** |
+| **Phase 4** | GCP IAM Security, Artifact Registry & Secret Manager | Set up GCP project APIs, Artifact Registry repository, runtime Service Account with least-privilege IAM, and Secret Manager schemas. | **READY TO PLAN** |
 | **Phase 5** | Cloud SQL PostGIS & Cloud Firestore Database Provisioning | Provision PostgreSQL 15 + PostGIS instance in `asia-south1`, execute spatial migrations, and verify Firestore production rules. | **PLANNED** |
 | **Phase 6** | Cloud Run Dual-Service Deployment & VPC Networking | Deploy Web BFF and Python GIS services to Cloud Run with Serverless VPC Connector and internal service-to-service proxying. | **PLANNED** |
 | **Phase 7** | Cloud Build CI/CD Automation & Production Verification | Establish automated `cloudbuild.yaml` deployment pipeline, execute live smoke testing, and draft municipal operations runbook. | **PLANNED** |
@@ -49,11 +49,11 @@
 ---
 
 ### Phase 3: Multi-Service Containerization & Local Compose Verification
-- [ ] Implement multi-stage `Dockerfile` for Node.js 24 + Express + React 19 frontend/BFF with production minification.
-- [ ] Implement multi-stage `backend/Dockerfile` for Python 3.11 FastAPI backend with PyTorch CPU and Earth Engine client dependencies.
-- [ ] Author unified `docker-compose.yml` linking Web, FastAPI backend, and `postgis/postgis:15-3.4` database service.
-- [ ] Verify local containerized run with health checks (`/api/health`) and synthetic fallback assurance.
-- [ ] Add `.dockerignore` for both services to prevent bloat from node_modules, cache, and virtual environments.
+- [x] Implement multi-stage `Dockerfile` for Node.js 24 + Express + React 19 frontend/BFF with production minification.
+- [x] Implement multi-stage `backend/Dockerfile` for Python 3.11 FastAPI backend with PyTorch CPU and Earth Engine client dependencies.
+- [x] Author unified `docker-compose.yml` linking Web, FastAPI backend, and `postgis/postgis:15-3.4` database service.
+- [x] Verify local containerized run with health checks (`/api/health`) and synthetic fallback assurance.
+- [x] Add `.dockerignore` for both services to prevent bloat from node_modules, cache, and virtual environments.
 
 ### Phase 4: GCP IAM Security, Artifact Registry & Secret Manager Architecture
 - [ ] Create GCP service enablement scripts for `run.googleapis.com`, `artifactregistry.googleapis.com`, `sqladmin.googleapis.com`, `secretmanager.googleapis.com`, and `earthengine.googleapis.com`.
