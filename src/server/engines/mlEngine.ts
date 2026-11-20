@@ -5,7 +5,7 @@ import type {
   SpatialCluster,
   WardFeature,
 } from '../../shared/types';
-import { getMunicipality } from '../data/smartCitiesData';
+import { getMunicipality } from '../data/smartCitiesData.ts';
 
 function haversineKm(a: [number, number], b: [number, number]): number {
   const toRad = (deg: number) => (deg * Math.PI) / 180;

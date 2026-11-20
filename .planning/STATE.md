@@ -3,8 +3,8 @@
 ## Current Context
 - **Project**: PRATYAKSHA — Unified Satellite Environmental Intelligence Platform
 - **Current Milestone**: Milestone 1 (Production Readiness & Persistence Architecture)
-- **Active Phase**: Phase 2 (Security & Test Automation Harness)
-- **Status**: Codebase onboarded successfully; Phase 1 baseline established and documented.
+- **Active Phase**: Phase 3 (Cloud Firestore & State Persistence)
+- **Status**: Phase 2 (Security & Test Automation Harness) executed and verified (31/31 tests passing). Ready for Phase 3 planning.
 
 ---
 
@@ -13,8 +13,8 @@
 | Phase | Description | Status |
 |-------|-------------|--------|
 | **Phase 1** | Core Platform Foundation (7 Modules, MapLibre, In-Memory ML) | Complete |
-| **Phase 2** | Security & Test Automation Harness | Next (Ready to Plan) |
-| **Phase 3** | Cloud Firestore & State Persistence | Queued |
+| **Phase 2** | Security & Test Automation Harness | Complete (Verified) |
+| **Phase 3** | Cloud Firestore & State Persistence | Next (Ready to Plan) |
 | **Phase 4** | Python FastAPI & PostGIS Gateway | Queued |
 | **Phase 5** | Production Earth Engine Pipeline & Deployment | Queued |
 
@@ -34,9 +34,11 @@
 - **ADR-04: Firestore CEL Invariant Enforcement**
   - *Decision*: Enforce PII isolation, terminal locks, and owner-only access at the Firestore rules level rather than relying solely on client code.
   - *Rationale*: Guarantees multi-tenant security and protects municipal officer identities from data scraping.
+- **ADR-05: In-Process Rules Invariant Evaluator for Continuous Testing**
+  - *Decision*: Implement `rulesEvaluator.ts` mirroring `firestore.rules` predicates to execute the "Dirty Dozen" security assertions natively in Node/Vitest with $< 100\text{ms}$ execution time and zero external daemon prerequisites.
+  - *Rationale*: Guarantees continuous regression testing in sandboxed CI pipelines where Java-based Firebase emulators are constrained.
 
 ---
 
 ## Immediate Next Steps
-1. Review codebase mapping documents in `.planning/codebase/`.
-2. Run `/gsd-plan-phase 2` to create detailed execution plan for Phase 2 (Security & Test Automation Harness).
+1. Run `/gsd-plan-phase 3` to plan Phase 3 (Cloud Firestore & State Persistence).

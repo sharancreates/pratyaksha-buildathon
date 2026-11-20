@@ -7,7 +7,7 @@
 | Phase | Title | Goal | Status |
 |-------|-------|------|--------|
 | **Phase 1** | Core Platform Foundation | 7 full-stack modules, MapLibre GL geospatial map, in-memory analytical engines, and 5-city smart cities dataset. | **COMPLETED** |
-| **Phase 2** | Security & Test Automation Harness | Wire automated test runner (`vitest` + `@firebase/rules-unit-testing`) to execute the "Dirty Dozen" security assertions and engine unit tests in CI. | **PLANNED** |
+| **Phase 2** | Security & Test Automation Harness | Wire automated test runner (`vitest` + `@firebase/rules-unit-testing`) to execute the "Dirty Dozen" security assertions and engine unit tests in CI. | **COMPLETED** |
 | **Phase 3** | Cloud Firestore & State Persistence | Connect UI to Cloud Firestore for live persistence of `/action_plans` and `/anomaly_reviews` with in-memory fallback. | **PLANNED** |
 | **Phase 4** | Python FastAPI & PostGIS Gateway | Implement proxy routing in `server.ts` to seamlessly delegate heavy GIS/ML tasks to FastAPI when available. | **PLANNED** |
 | **Phase 5** | Production Earth Engine Pipeline & Deployment | Multi-mission live Earth Engine pipeline, Docker containerization, and production municipal deployment guide. | **PLANNED** |
@@ -28,11 +28,12 @@
 - [x] Firestore security rules specification (`firestore.rules` and `security_spec.md`).
 
 ### Phase 2: Security & Test Automation Harness
-- [ ] Add `vitest` and `@firebase/rules-unit-testing` harness to `package.json`.
-- [ ] Implement executable test runner executing all 12 "Dirty Dozen" adversarial security tests against Firebase emulator.
-- [ ] Implement unit tests for `mlEngine.ts` (Isolation Forest bounds, DBSCAN clusters, consensus weights).
-- [ ] Implement unit tests for `forecastEngine.ts` (horizon intervals, fallback handling).
-- [ ] Configure `npm test` script and verify clean exit in CI environment.
+- [x] Add test harness and scripts to `package.json` and configure `vitest.config.ts`.
+- [x] Implement executable test runner executing all 12 "Dirty Dozen" adversarial security tests and positive assertions.
+- [x] Implement unit tests for `mlEngine.ts` (Isolation Forest bounds, DBSCAN clusters, consensus weights).
+- [x] Implement unit tests for `forecastEngine.ts` (horizon intervals, confidence envelope, benchmark metrics).
+- [x] Implement unit tests for `harmonizer.ts` and `segmentationEngine.ts`.
+- [x] Configure `npm test` script and verify clean exit in CI environment with 31/31 passing tests.
 
 ### Phase 3: Cloud Firestore & State Persistence
 - [ ] Initialize Firebase Client SDK in `src/context/` or `src/services/firebase.ts`.

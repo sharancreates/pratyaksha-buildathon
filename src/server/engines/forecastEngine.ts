@@ -7,7 +7,7 @@ import type {
   ModelComparisonRow,
   MunicipalityId,
 } from '../../shared/types';
-import { getMunicipality } from '../data/smartCitiesData';
+import { getMunicipality } from '../data/smartCitiesData.ts';
 
 const INDICATOR_META: Record<
   ForecastIndicator,

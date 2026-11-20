@@ -4,7 +4,7 @@ import type {
   MunicipalityId,
   SegmentationResult,
 } from '../../shared/types';
-import { getMunicipality } from '../data/smartCitiesData';
+import { getMunicipality } from '../data/smartCitiesData.ts';
 
 const CITY_SHARES: Record<
   MunicipalityId,

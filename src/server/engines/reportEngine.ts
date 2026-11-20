@@ -3,10 +3,10 @@ import type {
   EnvironmentActionPlan,
   MunicipalityId,
 } from '../../shared/types';
-import { getMunicipality } from '../data/smartCitiesData';
-import { mlConsensusService } from './mlEngine';
-import { forecastService } from './forecastEngine';
-import { harmonizerService } from './harmonizer';
+import { getMunicipality } from '../data/smartCitiesData.ts';
+import { mlConsensusService } from './mlEngine.ts';
+import { forecastService } from './forecastEngine.ts';
+import { harmonizerService } from './harmonizer.ts';
 
 export class ActionPlanReportEngine {
   private reports: Map<string, EnvironmentActionPlan> = new Map();

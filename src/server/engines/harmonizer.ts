@@ -4,7 +4,7 @@ import type {
   SatelliteMissionId,
   SatelliteObservation,
 } from '../../shared/types';
-import { getMunicipality, SATELLITE_MISSIONS } from '../data/smartCitiesData';
+import { getMunicipality, SATELLITE_MISSIONS } from '../data/smartCitiesData.ts';
 
 export class SatelliteDataHarmonizer {
   private observationsCache: Map<MunicipalityId, SatelliteObservation[]> = new Map();
