@@ -1,0 +1,10 @@
+{
+  "project_name": "pratyaksha-buildathon",
+  "planning_directory": ".planning",
+  "active_milestone": 1,
+  "active_phase": 2,
+  "auto_commit": true,
+  "intel": {
+    "enabled": true
+  }
+}
