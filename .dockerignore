@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.github
+.planning
+.venv
+__pycache__
+*.pyc
+*.pyo
+coverage
+.env
+.env.local
+*.log
+tests

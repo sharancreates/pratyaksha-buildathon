@@ -1,4 +1,5 @@
 import express from 'express';
+import axios from 'axios';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createServer as createViteServer } from 'vite';
@@ -609,6 +610,38 @@ async function startServer() {
       `attachment; filename="PRATYAKSHA_${report.municipalityId}_${report.id}.json"`
     );
     return res.send(JSON.stringify(report, null, 2));
+  });
+
+  // =========================================================================
+  // PYTHON FASTAPI GEOSPATIAL REVERSE PROXY
+  // =========================================================================
+  const GEO_BACKEND_URL = process.env.GEO_BACKEND_URL || 'http://localhost:8000';
+  app.use('/api/py', async (req, res) => {
+    try {
+      const targetUrl = `${GEO_BACKEND_URL}/api${req.url}`;
+      const response = await axios({
+        method: req.method,
+        url: targetUrl,
+        data: req.body,
+        headers: {
+          'Content-Type': req.headers['content-type'] || 'application/json',
+          ...(req.headers.authorization ? { Authorization: req.headers.authorization } : {}),
+        },
+        timeout: 15000,
+      });
+      return res.status(response.status).json(response.data);
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { status: number; data: unknown }; message: string };
+      if (axiosErr.response) {
+        return res.status(axiosErr.response.status).json(axiosErr.response.data);
+      }
+      return res.status(502).json({
+        error: 'Python GIS Backend unreachable',
+        backendUrl: GEO_BACKEND_URL,
+        dataMode: 'DEMO_FALLBACK',
+        message: axiosErr.message || 'Service unavailable',
+      });
+    }
   });
 
   // API 404 fallback

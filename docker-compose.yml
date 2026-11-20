@@ -1,0 +1,64 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pratyaksha-web-service
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - GEO_BACKEND_URL=http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - pratyaksha-net
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pratyaksha-geo-service
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - CORS_ORIGINS=http://localhost:3000,http://web:3000
+      - DATABASE_URL=postgresql://pratyaksha:pratyaksha_dev_pass@db:5432/pratyaksha
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - pratyaksha-net
+    restart: unless-stopped
+
+  db:
+    image: postgis/postgis:15-3.4
+    container_name: pratyaksha-postgis-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=pratyaksha
+      - POSTGRES_USER=pratyaksha
+      - POSTGRES_PASSWORD=pratyaksha_dev_pass
+    volumes:
+      - ./backend/database/migrations:/docker-entrypoint-initdb.d:ro
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pratyaksha -d pratyaksha"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pratyaksha-net
+    restart: unless-stopped
+
+networks:
+  pratyaksha-net:
+    driver: bridge
+
+volumes:
+  pgdata:
