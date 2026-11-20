@@ -13,6 +13,7 @@ import { mlConsensusService } from './src/server/engines/mlEngine.ts';
 import { forecastService } from './src/server/engines/forecastEngine.ts';
 import { segmentationService } from './src/server/engines/segmentationEngine.ts';
 import { reportEngine } from './src/server/engines/reportEngine.ts';
+import { getGcpIdToken } from './src/server/utils/gcpAuth.ts';
 import type {
   ForecastAlgorithm,
   ForecastHorizon,
@@ -689,6 +690,44 @@ async function startServer() {
     return res.send(JSON.stringify(report, null, 2));
   });
 
+  // =========================================================================
+  // PYTHON FASTAPI GEOSPATIAL REVERSE PROXY
+  // =========================================================================
+  const GEO_BACKEND_URL = process.env.GEO_BACKEND_URL || 'http://localhost:8000';
+  app.use('/api/py', async (req, res) => {
+    try {
+      const targetUrl = `${GEO_BACKEND_URL}/api${req.url}`;
+      let authHeader = req.headers.authorization as string | undefined;
+      if (!authHeader) {
+        const idToken = await getGcpIdToken(GEO_BACKEND_URL);
+        if (idToken) {
+          authHeader = `Bearer ${idToken}`;
+        }
+      }
+      const response = await axios({
+        method: req.method,
+        url: targetUrl,
+        data: req.body,
+        headers: {
+          'Content-Type': req.headers['content-type'] || 'application/json',
+          ...(authHeader ? { Authorization: authHeader } : {}),
+        },
+        timeout: 15000,
+      });
+      return res.status(response.status).json(response.data);
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { status: number; data: unknown }; message: string };
+      if (axiosErr.response) {
+        return res.status(axiosErr.response.status).json(axiosErr.response.data);
+      }
+      return res.status(502).json({
+        error: 'Python GIS Backend unreachable',
+        backendUrl: GEO_BACKEND_URL,
+        dataMode: 'DEMO_FALLBACK',
+        message: axiosErr.message || 'Service unavailable',
+      });
+    }
+  });
   // API 404 fallback
   app.use('/api', (_req, res) => {
     res.status(404).json({ error: 'API endpoint not found' });
