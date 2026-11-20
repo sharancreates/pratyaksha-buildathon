@@ -1,39 +1,38 @@
-# Multi-stage production build for PRATYAKSHA Web BFF & React 19 SPA
-# Stage 1: Build static frontend assets
+# Stage 1: Build the React 19 Frontend SPA
 FROM node:24-alpine AS builder
 
 WORKDIR /app
 
-# Install dependencies needed for build
+# Copy package manifests and install dependencies for compilation
 COPY package.json ./
 RUN npm install
 
-# Copy application source code for compilation
-COPY index.html vite.config.ts tsconfig.json ./
-COPY src ./src
+# Copy configuration and source files
+COPY tsconfig.json vite.config.ts index.html ./
+COPY src/ ./src/
 
-# Build production client bundle into /app/dist
+# Compile production Vite bundle into /app/dist
 RUN npm run build
 
-# Stage 2: Production runner with minimal footprint
+# Stage 2: Production Server Runtime
 FROM node:24-alpine AS runner
 
 WORKDIR /app
 
-ENV NODE_ENV=production
-ENV PORT=3000
+ENV NODE_ENV=production \
+    PORT=3000
 
 # Install production dependencies only
 COPY package.json ./
 RUN npm install --omit=dev
 
-# Copy compiled frontend assets from builder stage
+# Copy compiled frontend from builder stage
 COPY --from=builder /app/dist ./dist
 
-# Copy TypeScript server runtime and shared data/types
+# Copy backend TypeScript server and shared data/types
 COPY server.ts ./
-COPY src/server ./src/server
-COPY src/shared ./src/shared
+COPY src/server/ ./src/server/
+COPY src/shared/ ./src/shared/
 
 # Security: run as unprivileged node user
 USER node

@@ -18,8 +18,8 @@
 | Phase | Title | Goal | Status |
 |-------|-------|------|--------|
 | **Phase 3** | Multi-Service Containerization & Local Compose Verification | Create optimized multi-stage Dockerfiles for Node Web BFF and Python FastAPI, plus unified `docker-compose.yml` with PostGIS. | **COMPLETED** |
-| **Phase 4** | GCP IAM Security, Artifact Registry & Secret Manager | Set up GCP project APIs, Artifact Registry repository, runtime Service Account with least-privilege IAM, and Secret Manager schemas. | **READY TO PLAN** |
-| **Phase 5** | Cloud SQL PostGIS & Cloud Firestore Database Provisioning | Provision PostgreSQL 15 + PostGIS instance in `asia-south1`, execute spatial migrations, and verify Firestore production rules. | **PLANNED** |
+| **Phase 4** | GCP IAM Security, Artifact Registry & Secret Manager | Set up GCP project APIs, Artifact Registry repository, runtime Service Account with least-privilege IAM, and Secret Manager schemas. | **COMPLETED** |
+| **Phase 5** | Cloud SQL PostGIS & Cloud Firestore Database Provisioning | Provision PostgreSQL 15 + PostGIS instance in `asia-south1`, execute spatial migrations, and verify Firestore production rules. | **READY TO PLAN** |
 | **Phase 6** | Cloud Run Dual-Service Deployment & VPC Networking | Deploy Web BFF and Python GIS services to Cloud Run with Serverless VPC Connector and internal service-to-service proxying. | **PLANNED** |
 | **Phase 7** | Cloud Build CI/CD Automation & Production Verification | Establish automated `cloudbuild.yaml` deployment pipeline, execute live smoke testing, and draft municipal operations runbook. | **PLANNED** |
 
@@ -56,10 +56,10 @@
 - [x] Add `.dockerignore` for both services to prevent bloat from node_modules, cache, and virtual environments.
 
 ### Phase 4: GCP IAM Security, Artifact Registry & Secret Manager Architecture
-- [ ] Create GCP service enablement scripts for `run.googleapis.com`, `artifactregistry.googleapis.com`, `sqladmin.googleapis.com`, `secretmanager.googleapis.com`, and `earthengine.googleapis.com`.
-- [ ] Establish OCI Artifact Registry repository `pratyaksha-repo` in region `asia-south1`.
-- [ ] Define dedicated runtime service account `sa-pratyaksha-runtime` with minimal required IAM roles (`secretmanager.secretAccessor`, `cloudsql.client`, `datastore.user`).
-- [ ] Author Secret Manager configuration templates for `DATABASE_URL`, `GEE_SERVICE_ACCOUNT_KEY`, and `FIREBASE_CONFIG`.
+- [x] Create GCP service enablement scripts for `run.googleapis.com`, `artifactregistry.googleapis.com`, `sqladmin.googleapis.com`, `secretmanager.googleapis.com`, and `earthengine.googleapis.com`.
+- [x] Establish OCI Artifact Registry repository `pratyaksha-repo` in region `asia-south1`.
+- [x] Define dedicated runtime service account `sa-pratyaksha-runtime` with minimal required IAM roles (`secretmanager.secretAccessor`, `cloudsql.client`, `datastore.user`, `run.invoker`).
+- [x] Author Secret Manager configuration templates for `DATABASE_URL`, `GEE_SERVICE_ACCOUNT_KEY`, and `FIREBASE_CONFIG`.
 
 ### Phase 5: Cloud SQL PostGIS & Cloud Firestore Database Provisioning
 - [ ] Formulate Cloud SQL PostgreSQL 15 provisioning commands with PostGIS spatial extension flags.

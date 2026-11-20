@@ -1,4 +1,6 @@
 __pycache__
+*.pyc
+*.pyo
 *.py[cod]
 *$py.class
 *.so
@@ -6,9 +8,9 @@ __pycache__
 venv
 env
 .pytest_cache
+*.log
 .git
 .gitignore
 .env*
-*.log
 Dockerfile
 .dockerignore

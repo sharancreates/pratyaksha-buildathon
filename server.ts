@@ -1,4 +1,5 @@
 import express from 'express';
+import axios from 'axios';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createServer as createViteServer } from 'vite';
@@ -178,7 +179,8 @@ async function startServer() {
   // =========================================================================
   // SYSTEM & HEALTH
   // =========================================================================
-  const PYTHON_SERVICE_URL = process.env.PYTHON_SERVICE_URL || 'http://localhost:8000';
+  const PYTHON_SERVICE_URL = process.env.PYTHON_SERVICE_URL || process.env.GEO_BACKEND_URL || 'http://localhost:8000';
+  const GEO_BACKEND_URL = PYTHON_SERVICE_URL;
 
   app.get('/api/health', async (_req, res) => {
     let pythonStatus = 'offline_or_fallback';
