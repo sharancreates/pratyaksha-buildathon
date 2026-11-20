@@ -74,6 +74,6 @@
 - [x] Configure Serverless VPC Access connector for private internal communication to Cloud SQL without public IP exposure.
 
 ### Phase 7: Cloud Build CI/CD Automation & Production Verification
-- [ ] Author `cloudbuild.yaml` automated build and deploy pipeline with step-by-step test, build, push, and deploy tasks.
-- [ ] Develop end-to-end smoke verification script testing `/api/health`, `/api/dashboard/overview`, and `/api/anomalies/ahmedabad` on the live Cloud Run endpoint.
-- [ ] Write municipal commissioner operations runbook covering scaling policies, logs inspection, and credential rotation.
+- [x] Author `cloudbuild.yaml` automated build and deploy pipeline with step-by-step test, build, push, and deploy tasks.
+- [x] Develop end-to-end smoke verification script testing `/api/health`, `/api/dashboard/overview`, and `/api/anomalies/ahmedabad` on the live Cloud Run endpoint.
+- [x] Write municipal commissioner operations runbook covering scaling policies, logs inspection, and credential rotation.
