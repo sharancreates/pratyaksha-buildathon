@@ -695,7 +695,7 @@ async function startServer() {
   } else {
     const distDir = path.join(__dirname, 'dist');
     app.use(express.static(distDir));
-    app.get('*', (_req, res) => {
+    app.get('/{*path}', (_req, res) => {
       res.sendFile(path.join(distDir, 'index.html'));
     });
   }
