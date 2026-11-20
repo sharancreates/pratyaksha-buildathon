@@ -35,46 +35,46 @@ const LAYER_META: { id: MapLayerId; label: string; description: string }[] = [
 
 function getWardColor(ward: WardFeature, layer: MapLayerId): string {
   if (layer === 'heat_island') {
-    if (ward.lstCelsius >= 43) return '#EF4444';
-    if (ward.lstCelsius >= 40) return '#F97316';
-    if (ward.lstCelsius >= 37) return '#F59E0B';
-    return '#22D3EE';
+    if (ward.lstCelsius >= 43) return '#FF0000';
+    if (ward.lstCelsius >= 40) return '#000000';
+    if (ward.lstCelsius >= 37) return '#4B5563';
+    return '#E5E7EB';
   }
   if (layer === 'ndvi') {
-    if (ward.ndvi >= 0.45) return '#16A34A';
-    if (ward.ndvi >= 0.3) return '#84CC16';
-    if (ward.ndvi >= 0.2) return '#F59E0B';
-    return '#EF4444';
+    if (ward.ndvi >= 0.45) return '#000000';
+    if (ward.ndvi >= 0.3) return '#4B5563';
+    if (ward.ndvi >= 0.2) return '#9CA3AF';
+    return '#FF0000';
   }
   if (layer === 'air_quality') {
-    if (ward.no2UmolM2 >= 155) return '#EF4444';
-    if (ward.no2UmolM2 >= 120) return '#F59E0B';
-    if (ward.no2UmolM2 >= 90) return '#22D3EE';
-    return '#22C55E';
+    if (ward.no2UmolM2 >= 155) return '#FF0000';
+    if (ward.no2UmolM2 >= 120) return '#000000';
+    if (ward.no2UmolM2 >= 90) return '#4B5563';
+    return '#E5E7EB';
   }
   if (layer === 'land_cover') {
     switch (ward.dominantLandCover) {
       case 'dense_vegetation':
-        return '#16A34A';
+        return '#000000';
       case 'sparse_vegetation':
-        return '#84CC16';
+        return '#4B5563';
       case 'water_bodies':
-        return '#0EA5E9';
+        return '#9CA3AF';
       case 'bare_soil':
-        return '#F59E0B';
+        return '#D1D5DB';
       case 'agricultural':
-        return '#A16207';
+        return '#6B7280';
       default:
-        return '#EF4444';
+        return '#FF0000';
     }
   }
   if (layer === 'risk_zones') {
-    if (ward.riskScore >= 82) return '#EF4444';
-    if (ward.riskScore >= 68) return '#F59E0B';
-    if (ward.riskScore >= 45) return '#22D3EE';
-    return '#22C55E';
+    if (ward.riskScore >= 82) return '#FF0000';
+    if (ward.riskScore >= 68) return '#000000';
+    if (ward.riskScore >= 45) return '#4B5563';
+    return '#E5E7EB';
   }
-  return '#22D3EE';
+  return '#000000';
 }
 
 export function IntelligenceMap({
@@ -152,12 +152,7 @@ export function IntelligenceMap({
           indicator: a.indicator,
           severity: a.severity,
           consensusRiskScore: a.consensusRiskScore,
-          color:
-            a.severity === 'critical'
-              ? '#EF4444'
-              : a.severity === 'high'
-              ? '#F59E0B'
-              : '#22D3EE',
+          color: a.severity === 'critical' ? '#FF0000' : '#000000',
         },
         geometry: {
           type: 'Point' as const,
@@ -182,7 +177,7 @@ export function IntelligenceMap({
               'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
             ],
             tileSize: 256,
-            attribution: 'Esri World Imagery · PRATYAKSHA Demo Telemetry',
+            attribution: 'Esri World Imagery · PRATYAKSHA Telemetry',
           },
           'carto-dark': {
             type: 'raster',
@@ -190,23 +185,22 @@ export function IntelligenceMap({
               'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
             ],
             tileSize: 256,
-            attribution: 'CARTO Dark Matter · OpenStreetMap',
+            attribution: 'CARTO · OpenStreetMap',
           },
         },
         layers: [
           {
             id: 'background',
             type: 'background',
-            paint: { 'background-color': '#080D18' },
+            paint: { 'background-color': '#FFFFFF' },
           },
           {
             id: 'base-satellite',
             type: 'raster',
             source: 'esri-satellite',
             paint: {
-              'raster-opacity': 0.72,
-              'raster-brightness-max': 0.82,
-              'raster-saturation': -0.15,
+              'raster-opacity': 0.75,
+              'raster-saturation': -0.3,
             },
           },
           {
@@ -234,230 +228,202 @@ export function IntelligenceMap({
         type: 'line',
         source: 'municipal-boundary',
         paint: {
-          'line-color': '#22D3EE',
-          'line-width': 1.8,
+          'line-color': '#000000',
+          'line-width': 2.5,
           'line-dasharray': [4, 3],
-          'line-opacity': 0.8,
+          'line-opacity': 0.9,
         },
       });
 
-      map.addSource('wards-source', {
+      map.addSource('ward-polygons', {
         type: 'geojson',
         data: wardGeoJson,
       });
 
       map.addLayer({
-        id: 'wards-fill',
+        id: 'ward-fills',
         type: 'fill',
-        source: 'wards-source',
+        source: 'ward-polygons',
         paint: {
           'fill-color': ['get', 'fillColor'],
-          'fill-opacity': 0.36,
+          'fill-opacity': activeLayer === 'boundaries' ? 0.05 : 0.45,
         },
       });
 
       map.addLayer({
-        id: 'wards-outline',
+        id: 'ward-borders',
         type: 'line',
-        source: 'wards-source',
+        source: 'ward-polygons',
         paint: {
-          'line-color': ['get', 'fillColor'],
-          'line-width': 1.6,
-          'line-opacity': 0.9,
+          'line-color': '#000000',
+          'line-width': 1.5,
+          'line-opacity': 0.7,
         },
       });
 
-      map.addSource('hotspots-source', {
+      map.addSource('hotspot-points', {
         type: 'geojson',
         data: hotspotGeoJson,
       });
 
       map.addLayer({
-        id: 'hotspots-halo',
+        id: 'hotspot-circles',
         type: 'circle',
-        source: 'hotspots-source',
+        source: 'hotspot-points',
         paint: {
-          'circle-radius': 15,
           'circle-color': ['get', 'color'],
-          'circle-opacity': 0.22,
-        },
-      });
-
-      map.addLayer({
-        id: 'hotspots-core',
-        type: 'circle',
-        source: 'hotspots-source',
-        paint: {
-          'circle-radius': 6,
-          'circle-color': ['get', 'color'],
+          'circle-radius': 7,
           'circle-stroke-width': 2,
-          'circle-stroke-color': '#080D18',
+          'circle-stroke-color': '#FFFFFF',
         },
       });
 
-      map.on('mousemove', (e: maplibregl.MapMouseEvent) => {
-        setCursorCoords([
-          Number(e.lngLat.lng.toFixed(4)),
-          Number(e.lngLat.lat.toFixed(4)),
-        ]);
+      map.on('mousemove', (e) => {
+        setCursorCoords([e.lngLat.lng, e.lngLat.lat]);
       });
 
-      map.on('mouseenter', 'wards-fill', () => {
+      map.on('click', 'ward-fills', (e) => {
+        if (!e.features || e.features.length === 0) return;
+        const clickedId = e.features[0].properties?.id;
+        const matched = municipality.wards.find((w) => w.id === clickedId);
+        if (matched) setSelectedWard(matched);
+      });
+
+      map.on('mouseenter', 'ward-fills', () => {
         map.getCanvas().style.cursor = 'pointer';
       });
-      map.on('mouseleave', 'wards-fill', () => {
-        map.getCanvas().style.cursor = 'crosshair';
+
+      map.on('mouseleave', 'ward-fills', () => {
+        map.getCanvas().style.cursor = '';
       });
 
-      map.on('click', 'wards-fill', (e: maplibregl.MapLayerMouseEvent) => {
-        const feat = e.features?.[0];
-        const wid = feat?.properties?.id;
-        if (wid) {
-          const found = municipality.wards.find((w) => w.id === wid);
-          if (found) setSelectedWard(found);
-        }
-      });
-
-      map.on('click', 'hotspots-core', (e: maplibregl.MapLayerMouseEvent) => {
-        const feat = e.features?.[0];
-        const wid = feat?.properties?.wardId;
-        if (wid) {
-          const found = municipality.wards.find((w) => w.id === wid);
-          if (found) setSelectedWard(found);
-        }
-      });
-
+      mapRef.current = map;
       setMapReady(true);
     });
 
-    mapRef.current = map;
     return () => {
-      setMapReady(false);
       map.remove();
       mapRef.current = null;
+      setMapReady(false);
     };
-    // Re-create cleanly only when municipality ID changes so ward click closure stays synced
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [municipality.id]);
 
-  // Update GeoJSON layers when active layer or anomalies change
+  // Sync active layer changes
   useEffect(() => {
+    if (!mapReady || !mapRef.current) return;
     const map = mapRef.current;
-    if (!map || !mapReady) return;
-
-    const wardSrc = map.getSource('wards-source') as maplibregl.GeoJSONSource | undefined;
-    wardSrc?.setData(wardGeoJson);
-
-    const hotspotSrc = map.getSource('hotspots-source') as maplibregl.GeoJSONSource | undefined;
-    hotspotSrc?.setData(hotspotGeoJson);
-
-    const fillOpacity = activeLayer === 'boundaries' ? 0.08 : 0.38;
-    if (map.getLayer('wards-fill')) {
-      map.setPaintProperty('wards-fill', 'fill-opacity', fillOpacity);
+    if (map.getSource('ward-polygons')) {
+      (map.getSource('ward-polygons') as maplibregl.GeoJSONSource).setData(wardGeoJson);
     }
-  }, [wardGeoJson, hotspotGeoJson, activeLayer, mapReady]);
+    if (map.getLayer('ward-fills')) {
+      map.setPaintProperty(
+        'ward-fills',
+        'fill-opacity',
+        activeLayer === 'boundaries' ? 0.05 : 0.45
+      );
+    }
+  }, [activeLayer, wardGeoJson, mapReady]);
 
-  // Switch satellite / dark base imagery
+  // Sync basemap
   useEffect(() => {
+    if (!mapReady || !mapRef.current) return;
     const map = mapRef.current;
-    if (!map || !mapReady) return;
     if (map.getLayer('base-satellite') && map.getLayer('base-dark')) {
-      map.setLayoutProperty(
-        'base-satellite',
-        'visibility',
-        baseStyle === 'satellite' ? 'visible' : 'none'
-      );
-      map.setLayoutProperty(
-        'base-dark',
-        'visibility',
-        baseStyle === 'dark' ? 'visible' : 'none'
-      );
+      if (baseStyle === 'satellite') {
+        map.setLayoutProperty('base-satellite', 'visibility', 'visible');
+        map.setLayoutProperty('base-dark', 'visibility', 'none');
+      } else {
+        map.setLayoutProperty('base-satellite', 'visibility', 'none');
+        map.setLayoutProperty('base-dark', 'visibility', 'visible');
+      }
     }
   }, [baseStyle, mapReady]);
 
-  // Fly to focused coordinates when triggered externally
+  // Sync focus coordinates
   useEffect(() => {
-    const map = mapRef.current;
-    if (!map || !mapReady || !focusedCoordinates) return;
-    map.flyTo({ center: focusedCoordinates, zoom: 12.6, duration: 750 });
+    if (!mapReady || !mapRef.current || !focusedCoordinates) return;
+    mapRef.current.flyTo({
+      center: focusedCoordinates,
+      zoom: 13,
+      duration: 500,
+    });
   }, [focusedCoordinates, mapReady]);
 
   const handleZoom = (delta: number) => {
-    const map = mapRef.current;
-    if (!map) return;
-    map.zoomTo(map.getZoom() + delta, { duration: 220 });
+    if (!mapRef.current) return;
+    mapRef.current.zoomTo(mapRef.current.getZoom() + delta, { duration: 250 });
   };
 
   const handleRecenter = () => {
-    const map = mapRef.current;
-    if (!map) return;
-    map.flyTo({ center: municipality.center, zoom: municipality.zoom, duration: 500 });
+    if (!mapRef.current) return;
+    mapRef.current.flyTo({ center: municipality.center, zoom: municipality.zoom, duration: 400 });
   };
 
   const legendItems = useMemo(() => {
     switch (activeLayer) {
       case 'heat_island':
         return [
-          { color: '#EF4444', label: '≥ 43°C Severe UHI' },
-          { color: '#F97316', label: '40–43°C High Thermal' },
-          { color: '#F59E0B', label: '37–40°C Elevated' },
-          { color: '#22D3EE', label: '< 37°C Cool Corridor' },
+          { color: '#FF0000', label: '≥ 43°C Severe UHI' },
+          { color: '#000000', label: '40–43°C High' },
+          { color: '#4B5563', label: '37–40°C Elevated' },
+          { color: '#E5E7EB', label: '< 37°C Nominal' },
         ];
       case 'ndvi':
         return [
-          { color: '#16A34A', label: '≥ 0.45 Healthy Canopy' },
-          { color: '#84CC16', label: '0.30–0.44 Moderate' },
-          { color: '#F59E0B', label: '0.20–0.29 Stressed' },
-          { color: '#EF4444', label: '< 0.20 Sparse / Bare' },
+          { color: '#000000', label: '≥ 0.45 Dense Canopy' },
+          { color: '#4B5563', label: '0.30–0.44 Moderate' },
+          { color: '#9CA3AF', label: '0.20–0.29 Stressed' },
+          { color: '#FF0000', label: '< 0.20 Degraded' },
         ];
       case 'air_quality':
         return [
-          { color: '#EF4444', label: '≥ 155 µmol/m² Severe NO₂' },
-          { color: '#F59E0B', label: '120–154 High' },
-          { color: '#22D3EE', label: '90–119 Moderate' },
-          { color: '#22C55E', label: '< 90 Nominal' },
+          { color: '#FF0000', label: '≥ 155 µmol/m² Critical' },
+          { color: '#000000', label: '120–154 High' },
+          { color: '#4B5563', label: '90–119 Moderate' },
+          { color: '#E5E7EB', label: '< 90 Nominal' },
         ];
       case 'land_cover':
         return [
-          { color: '#EF4444', label: 'Built-Up' },
-          { color: '#16A34A', label: 'Dense Canopy' },
-          { color: '#0EA5E9', label: 'Water Bodies' },
-          { color: '#F59E0B', label: 'Bare Soil' },
+          { color: '#FF0000', label: 'Built-Up Area' },
+          { color: '#000000', label: 'Dense Canopy' },
+          { color: '#9CA3AF', label: 'Water Body' },
+          { color: '#D1D5DB', label: 'Bare Soil' },
         ];
       default:
         return [
-          { color: '#EF4444', label: 'Critical Risk (≥ 82)' },
-          { color: '#F59E0B', label: 'High Risk (68–81)' },
-          { color: '#22D3EE', label: 'Moderate (45–67)' },
-          { color: '#22C55E', label: 'Nominal (< 45)' },
+          { color: '#FF0000', label: 'Critical Risk (≥ 82)' },
+          { color: '#000000', label: 'High Risk (68–81)' },
+          { color: '#4B5563', label: 'Moderate (45–67)' },
+          { color: '#E5E7EB', label: 'Nominal (< 45)' },
         ];
     }
   }, [activeLayer]);
 
   return (
-    <div className="bg-[#111D2E] border border-slate-800/90 rounded-lg overflow-hidden flex flex-col">
+    <div className="border-2 border-black bg-white flex flex-col">
       {/* Map Toolbar */}
-      <div className="px-4 py-3 border-b border-slate-800/90 flex flex-wrap items-center justify-between gap-3 bg-[#0D1524]">
-        <div className="flex items-center gap-2 min-w-0">
-          <Layers className="w-4 h-4 text-cyan-400 shrink-0" />
-          <span className="text-xs font-semibold text-slate-100 whitespace-nowrap">
-            Geospatial Intelligence Map — {municipality.name}
+      <div className="px-5 py-3 border-b-2 border-black flex flex-wrap items-center justify-between gap-3 bg-white">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <Layers className="w-4 h-4 text-black shrink-0" aria-hidden="true" />
+          <span className="text-xs font-black uppercase tracking-wider text-black whitespace-nowrap">
+            INTELLIGENCE MAP — {municipality.name}
           </span>
-          <span className="hidden xl:inline text-xs font-mono text-slate-500 whitespace-nowrap">
+          <span className="hidden xl:inline text-[11px] font-mono text-[#4B5563] whitespace-nowrap">
             · {municipality.crsUtm} → EPSG:4326
           </span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-1.5" role="toolbar" aria-label="Map Layer Selection">
           {LAYER_META.map((layer) => (
             <button
               key={layer.id}
               type="button"
               onClick={() => setActiveLayer(layer.id)}
-              className={`px-2.5 py-1.5 rounded text-[11px] font-medium transition-colors whitespace-nowrap ${
+              className={`px-3 py-1.5 text-[11px] font-black uppercase tracking-wider transition-none whitespace-nowrap border-2 ${
                 activeLayer === layer.id
-                  ? 'bg-cyan-500/20 text-cyan-200 border border-cyan-400/50'
-                  : 'bg-[#111D2E] text-slate-400 border border-slate-800 hover:text-slate-200'
+                  ? 'bg-black text-white border-black'
+                  : 'bg-white text-black border-black hover:bg-[#E5E7EB]'
               }`}
             >
               {layer.label}
@@ -466,44 +432,40 @@ export function IntelligenceMap({
         </div>
       </div>
 
-      {/* Map Viewport + Right Ward Telemetry Inspector */}
+      {/* Map Viewport + Ward Telemetry Inspector */}
       <div className="grid grid-cols-1 xl:grid-cols-12 min-h-[480px]">
-        <div className="xl:col-span-8 relative min-h-[420px] xl:min-h-[500px] bg-[#080D18]">
-          <div ref={containerRef} className="w-full h-full min-h-[420px] xl:min-h-[500px]" />
+        <div className="xl:col-span-8 relative min-h-[420px] xl:min-h-[520px] bg-[#E5E7EB]">
+          <div ref={containerRef} className="w-full h-full min-h-[420px] xl:min-h-[520px]" />
 
           {/* Top-left Base Map Toggle */}
-          <div className="absolute top-3 left-3 z-10 flex items-center gap-1 bg-[#0D1524]/90 backdrop-blur-sm border border-slate-700/80 rounded-md p-1">
+          <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-white border-2 border-black p-1 shadow-[4px_4px_0px_#000]">
             <button
               type="button"
               onClick={() => setBaseStyle('satellite')}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium transition-colors ${
-                baseStyle === 'satellite'
-                  ? 'bg-cyan-500/20 text-cyan-200'
-                  : 'text-slate-400 hover:text-slate-200'
+              className={`inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-black uppercase tracking-wider transition-none ${
+                baseStyle === 'satellite' ? 'bg-black text-white' : 'text-black hover:bg-[#E5E7EB]'
               }`}
             >
-              <Satellite className="w-3 h-3" />
-              Satellite
+              <Satellite className="w-3 h-3" aria-hidden="true" />
+              SATELLITE
             </button>
             <button
               type="button"
               onClick={() => setBaseStyle('dark')}
-              className={`px-2.5 py-1 rounded text-[11px] font-medium transition-colors ${
-                baseStyle === 'dark'
-                  ? 'bg-cyan-500/20 text-cyan-200'
-                  : 'text-slate-400 hover:text-slate-200'
+              className={`px-3 py-1 text-[11px] font-black uppercase tracking-wider transition-none ${
+                baseStyle === 'dark' ? 'bg-black text-white' : 'text-black hover:bg-[#E5E7EB]'
               }`}
             >
-              Dark Vector
+              DARK
             </button>
           </div>
 
           {/* Top-right Zoom & Recenter Controls */}
-          <div className="absolute top-3 right-3 z-10 flex flex-col gap-1 bg-[#0D1524]/90 backdrop-blur-sm border border-slate-700/80 rounded-md p-1">
+          <div className="absolute top-4 right-4 z-10 flex flex-col gap-1 bg-white border-2 border-black p-1 shadow-[4px_4px_0px_#000]">
             <button
               type="button"
               onClick={() => handleZoom(0.9)}
-              className="w-8 h-8 flex items-center justify-center rounded text-slate-300 hover:bg-slate-800 hover:text-cyan-300"
+              className="w-8 h-8 flex items-center justify-center text-black hover:bg-black hover:text-white transition-none"
               aria-label="Zoom in"
             >
               <Plus className="w-4 h-4" />
@@ -511,7 +473,7 @@ export function IntelligenceMap({
             <button
               type="button"
               onClick={() => handleZoom(-0.9)}
-              className="w-8 h-8 flex items-center justify-center rounded text-slate-300 hover:bg-slate-800 hover:text-cyan-300"
+              className="w-8 h-8 flex items-center justify-center text-black hover:bg-black hover:text-white transition-none border-t border-black/20"
               aria-label="Zoom out"
             >
               <Minus className="w-4 h-4" />
@@ -519,7 +481,7 @@ export function IntelligenceMap({
             <button
               type="button"
               onClick={handleRecenter}
-              className="w-8 h-8 flex items-center justify-center rounded text-slate-300 hover:bg-slate-800 hover:text-cyan-300 border-t border-slate-800"
+              className="w-8 h-8 flex items-center justify-center text-black hover:bg-black hover:text-white transition-none border-t border-black/20"
               aria-label="Recenter on municipality"
             >
               <Crosshair className="w-4 h-4" />
@@ -527,16 +489,17 @@ export function IntelligenceMap({
           </div>
 
           {/* Bottom-left Dynamic Legend */}
-          <div className="absolute bottom-3 left-3 z-10 bg-[#0D1524]/92 backdrop-blur-sm border border-slate-700/80 rounded-md px-3 py-2.5 max-w-xs">
-            <div className="text-[11px] font-semibold text-slate-200 mb-1.5">
-              {LAYER_META.find((l) => l.id === activeLayer)?.label} Legend
+          <div className="absolute bottom-4 left-4 z-10 bg-white border-2 border-black p-3 shadow-[4px_4px_0px_#000] max-w-xs">
+            <div className="text-[11px] font-black uppercase tracking-wider text-black mb-2 border-b border-black/20 pb-1">
+              {LAYER_META.find((l) => l.id === activeLayer)?.label} LEGEND
             </div>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
               {legendItems.map((item) => (
-                <div key={item.label} className="flex items-center gap-1.5 text-[11px] text-slate-300">
+                <div key={item.label} className="flex items-center gap-2 text-[10px] font-mono font-bold text-black">
                   <span
-                    className="w-2.5 h-2.5 rounded-sm shrink-0"
+                    className="w-3 h-3 border border-black shrink-0"
                     style={{ backgroundColor: item.color }}
+                    aria-hidden="true"
                   />
                   <span className="truncate">{item.label}</span>
                 </div>
@@ -545,105 +508,112 @@ export function IntelligenceMap({
           </div>
 
           {/* Bottom-right Coordinate Readout */}
-          <div className="absolute bottom-3 right-3 z-10 bg-[#0D1524]/90 border border-slate-700/80 rounded px-2.5 py-1 text-[11px] font-mono text-slate-300 tabular-nums">
+          <div className="absolute bottom-4 right-4 z-10 bg-white border-2 border-black px-3 py-1 text-[11px] font-mono font-bold text-black tabular-nums shadow-[3px_3px_0px_#000]">
             {cursorCoords[1].toFixed(4)}° N, {cursorCoords[0].toFixed(4)}° E
           </div>
         </div>
 
         {/* Ward Inspector Side Panel */}
-        <div className="xl:col-span-4 border-t xl:border-t-0 xl:border-l border-slate-800/90 bg-[#0D1524] p-4 flex flex-col justify-between gap-4">
+        <div className="xl:col-span-4 border-t-2 xl:border-t-0 xl:border-l-2 border-black bg-white p-6 flex flex-col justify-between gap-6">
           {selectedWard ? (
             <>
-              <div className="space-y-4">
-                <div className="border-b border-slate-800 pb-3">
+              <div className="space-y-5">
+                <div className="border-b-2 border-black pb-4">
                   <div className="flex items-center justify-between gap-2 text-[11px] font-mono">
-                    <span className="text-slate-400">Selected Municipal Zone</span>
+                    <span className="text-[#4B5563] uppercase">ZONE TELEMETRY</span>
                     <span
-                      className={
+                      className={`font-mono text-xs font-black uppercase px-2 py-0.5 border ${
                         selectedWard.severity === 'critical'
-                          ? 'text-red-400 font-semibold'
-                          : selectedWard.severity === 'high'
-                          ? 'text-amber-400 font-semibold'
-                          : selectedWard.severity === 'moderate'
-                          ? 'text-cyan-400 font-semibold'
-                          : 'text-emerald-400 font-semibold'
-                      }
+                          ? 'border-[#FF0000] text-[#FF0000]'
+                          : 'border-black text-black'
+                      }`}
                     >
                       {selectedWard.severity.toUpperCase()} · RISK {selectedWard.riskScore}/100
                     </span>
                   </div>
-                  <h3 className="mt-1 text-base font-semibold text-slate-100">
+                  <h3 className="mt-2 text-lg font-black uppercase tracking-tight text-black">
                     {selectedWard.name}
                   </h3>
-                  <div className="mt-1 text-xs font-mono text-slate-400 tabular-nums">
+                  <div className="mt-1 text-xs font-mono text-[#4B5563] tabular-nums">
                     {selectedWard.center[1].toFixed(4)}°N, {selectedWard.center[0].toFixed(4)}°E ·{' '}
                     {selectedWard.areaKm2} km² · Pop {(selectedWard.population / 1000).toFixed(0)}k
                   </div>
                 </div>
 
-                {/* Ward Metrics Grid */}
-                <div className="grid grid-cols-2 gap-2.5">
-                  <div className="bg-[#111D2E] border border-slate-800 rounded-md p-3">
-                    <div className="text-[11px] text-slate-400">Land Surface Temp</div>
-                    <div className="mt-1 text-lg font-mono font-bold text-slate-100 tabular-nums">
+                {/* Ward Metrics 2x2 Grid */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="card-boxed !p-3 group">
+                    <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                      LST TEMP
+                    </div>
+                    <div className="mt-1 text-xl font-black tabular-nums">
                       {selectedWard.lstCelsius.toFixed(1)} °C
                     </div>
-                    <div className="text-[11px] font-mono text-amber-400 tabular-nums">
+                    <div className="text-[10px] font-mono text-[#FF0000] group-hover:text-[#FF0000] font-bold tabular-nums">
                       {selectedWard.lstCelsius - selectedWard.lstBaseline >= 0 ? '+' : ''}
                       {(selectedWard.lstCelsius - selectedWard.lstBaseline).toFixed(1)} °C vs base
                     </div>
                   </div>
-                  <div className="bg-[#111D2E] border border-slate-800 rounded-md p-3">
-                    <div className="text-[11px] text-slate-400">Vegetation NDVI</div>
-                    <div className="mt-1 text-lg font-mono font-bold text-slate-100 tabular-nums">
+
+                  <div className="card-boxed !p-3 group">
+                    <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                      CANOPY NDVI
+                    </div>
+                    <div className="mt-1 text-xl font-black tabular-nums">
                       {selectedWard.ndvi.toFixed(2)}
                     </div>
-                    <div className="text-[11px] font-mono text-slate-400 tabular-nums">
-                      Baseline {selectedWard.ndviBaseline.toFixed(2)}
+                    <div className="text-[10px] font-mono text-[#4B5563] group-hover:text-[#D1D5DB] tabular-nums">
+                      Base {selectedWard.ndviBaseline.toFixed(2)}
                     </div>
                   </div>
-                  <div className="bg-[#111D2E] border border-slate-800 rounded-md p-3">
-                    <div className="text-[11px] text-slate-400">Tropospheric NO₂</div>
-                    <div className="mt-1 text-lg font-mono font-bold text-slate-100 tabular-nums">
+
+                  <div className="card-boxed !p-3 group">
+                    <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                      NO₂ TROPO
+                    </div>
+                    <div className="mt-1 text-xl font-black tabular-nums">
                       {selectedWard.no2UmolM2.toFixed(1)}
                     </div>
-                    <div className="text-[11px] font-mono text-slate-400 tabular-nums">
-                      µmol/m² · AQI {selectedWard.aqi}
+                    <div className="text-[10px] font-mono text-[#4B5563] group-hover:text-[#D1D5DB] tabular-nums">
+                      AQI {selectedWard.aqi}
                     </div>
                   </div>
-                  <div className="bg-[#111D2E] border border-slate-800 rounded-md p-3">
-                    <div className="text-[11px] text-slate-400">Water Extent</div>
-                    <div className="mt-1 text-lg font-mono font-bold text-slate-100 tabular-nums">
+
+                  <div className="card-boxed !p-3 group">
+                    <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                      WATER EXTENT
+                    </div>
+                    <div className="mt-1 text-xl font-black tabular-nums">
                       {selectedWard.waterExtentKm2.toFixed(2)} km²
                     </div>
-                    <div className="text-[11px] font-mono text-slate-400 tabular-nums">
-                      Baseline {selectedWard.waterBaselineKm2.toFixed(2)} km²
+                    <div className="text-[10px] font-mono text-[#4B5563] group-hover:text-[#D1D5DB] tabular-nums">
+                      Base {selectedWard.waterBaselineKm2.toFixed(2)} km²
                     </div>
                   </div>
                 </div>
 
                 {/* Quick Ward Switcher */}
                 <div>
-                  <div className="text-[11px] font-medium text-slate-400 mb-2">
-                    Click Zone on Map or Select Below
+                  <div className="text-[11px] font-black uppercase tracking-wider text-black mb-2">
+                    SELECT MUNICIPAL SECTOR
                   </div>
-                  <div className="space-y-1 max-h-40 overflow-y-auto pr-1">
+                  <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
                     {municipality.wards.map((w) => (
                       <button
                         key={w.id}
                         type="button"
                         onClick={() => {
                           setSelectedWard(w);
-                          mapRef.current?.flyTo({ center: w.center, zoom: 12.2, duration: 550 });
+                          mapRef.current?.flyTo({ center: w.center, zoom: 12.2, duration: 400 });
                         }}
-                        className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded text-left text-xs transition-colors ${
+                        className={`w-full flex items-center justify-between px-3 py-2 text-left text-xs font-bold uppercase transition-none border ${
                           selectedWard.id === w.id
-                            ? 'bg-cyan-500/15 text-cyan-200 border border-cyan-500/35'
-                            : 'text-slate-300 hover:bg-[#111D2E] border border-transparent'
+                            ? 'bg-black text-white border-black'
+                            : 'bg-white text-black border-black/20 hover:border-black'
                         }`}
                       >
                         <span className="truncate">{w.name}</span>
-                        <span className="font-mono text-[11px] text-slate-400 tabular-nums ml-2 shrink-0">
+                        <span className="font-mono text-[11px] tabular-nums ml-2 shrink-0">
                           {w.riskScore}
                         </span>
                       </button>
@@ -652,31 +622,33 @@ export function IntelligenceMap({
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-800 flex flex-wrap gap-2">
+              <div className="pt-4 border-t-2 border-black flex flex-wrap gap-2">
                 {onInspectAnomaly && (
                   <button
                     type="button"
                     onClick={() => onInspectAnomaly(selectedWard.id)}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-cyan-500/15 border border-cyan-400/40 text-xs font-medium text-cyan-200 hover:bg-cyan-500/25 transition-colors whitespace-nowrap"
+                    className="button-sm flex-1 text-xs"
                   >
-                    <ShieldAlert className="w-3.5 h-3.5" />
-                    Inspect ML Anomaly
+                    <ShieldAlert className="w-3.5 h-3.5 mr-1.5" aria-hidden="true" />
+                    INSPECT ANOMALY
                   </button>
                 )}
                 {onOpenActionPlan && (
                   <button
                     type="button"
                     onClick={onOpenActionPlan}
-                    className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-[#111D2E] border border-slate-700 text-xs font-medium text-slate-200 hover:border-slate-500 transition-colors whitespace-nowrap"
+                    className="button-sm bg-black text-white hover:bg-white hover:text-black text-xs"
                   >
-                    <FileText className="w-3.5 h-3.5" />
-                    Action Plan
+                    <FileText className="w-3.5 h-3.5 mr-1.5" aria-hidden="true" />
+                    ACTION PLAN
                   </button>
                 )}
               </div>
             </>
           ) : (
-            <div className="text-xs text-slate-400">Select a municipal ward on the map to inspect telemetry.</div>
+            <div className="text-xs text-[#4B5563] font-mono">
+              SELECT A MUNICIPAL WARD ON THE MAP TO INSPECT TELEMETRY.
+            </div>
           )}
         </div>
       </div>

@@ -1,8 +1,16 @@
 @import "tailwindcss";
 @import "maplibre-gl/dist/maplibre-gl.css";
 
+:root {
+  --ink: #000000;
+  --paper: #FFFFFF;
+  --signal: #FF0000;
+  --muted: #4B5563;
+  --ghost: #E5E7EB;
+}
+
 @theme {
-  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: Inter, "Archivo Black", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
@@ -11,14 +19,23 @@
   body,
   #root {
     min-height: 100%;
-    background-color: #080d18;
-    color: #f1f5f9;
-    font-family: var(--font-sans);
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: Inter, "Archivo Black", "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(148, 163, 184, 0.25) transparent;
+    scrollbar-color: var(--ink) var(--ghost);
+  }
+
+  /* All buttons and interactive elements get instant transitions */
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    transition: none !important;
   }
 }
 
@@ -26,42 +43,260 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* MapLibre dark control styling */
+/* =========================================================================
+   EXAGGERATED MINIMALISM REFERENCE CLASSES
+   ========================================================================= */
+
+.hero {
+  padding: 8rem 2rem;
+}
+
+.hero-compact {
+  padding: 4rem 1.5rem 3rem;
+}
+
+.display {
+  margin: 0 0 4rem;
+  font-size: clamp(3rem, 10vw, 10rem);
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  font-family: "Archivo Black", Inter, sans-serif;
+}
+
+.display-lg {
+  margin: 0 0 6rem;
+  font-size: clamp(3rem, 12vw, 12rem);
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  font-family: "Archivo Black", Inter, sans-serif;
+}
+
+.display-sub {
+  margin: 0 0 2rem;
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  font-family: "Archivo Black", Inter, sans-serif;
+}
+
+/* Outlined words need looser tracking so neighbouring strokes don't cross */
+.display .outline,
+.display-lg .outline,
+.display-sub .outline,
+.outline-text {
+  color: var(--paper);
+  -webkit-text-stroke: 2px var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 28rem;
+  font-size: 1.25rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* Oversized index numbers as quiet decoration: mark them aria-hidden */
+.index {
+  font-size: 8rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--ghost);
+  font-family: "Archivo Black", Inter, sans-serif;
+  user-select: none;
+}
+
+.index-md {
+  font-size: 4.5rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--ghost);
+  font-family: "Archivo Black", Inter, sans-serif;
+  user-select: none;
+}
+
+/* Instant inversion hovers: no transition */
+.button {
+  padding: 1.5rem 3rem;
+  border: 2px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: none;
+}
+
+.button-sm {
+  padding: 0.75rem 1.75rem;
+  border: 2px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: none;
+}
+
+.button-signal {
+  padding: 0.75rem 1.75rem;
+  border: 2px solid var(--signal);
+  background: var(--signal);
+  color: var(--paper);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: none;
+}
+
+.button-signal:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.card {
+  padding: 2rem;
+  border-top: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  transition: none;
+}
+
+.card-boxed {
+  padding: 2rem;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  transition: none;
+}
+
+.button:hover,
+.button-sm:hover,
+.card:hover,
+.card-boxed:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.card:hover .lead,
+.card-boxed:hover .lead {
+  color: #D1D5DB;
+}
+
+.card:hover .index,
+.card-boxed:hover .index,
+.card:hover .index-md,
+.card-boxed:hover .index-md {
+  color: #374151;
+}
+
+.button:focus-visible,
+.button-sm:focus-visible,
+.button-signal:focus-visible,
+.card:focus-within,
+.card-boxed:focus-within,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--signal) !important;
+  outline-offset: 4px !important;
+}
+
+.nav a:hover,
+.nav-link:hover {
+  text-decoration: line-through;
+}
+
+/* =========================================================================
+   ACCESSIBILITY & PREFERS-REDUCED-MOTION
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================================================
+   MAPLIBRE MINIMALIST HIGH-CONTRAST STYLING
+   ========================================================================= */
+
 .maplibregl-ctrl-group {
-  background-color: #0d1524 !important;
-  border: 1px solid rgba(148, 163, 184, 0.2) !important;
-  border-radius: 6px !important;
+  background-color: var(--paper) !important;
+  border: 2px solid var(--ink) !important;
+  border-radius: 0px !important;
   box-shadow: none !important;
 }
 
 .maplibregl-ctrl-group button {
   background-color: transparent !important;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.14) !important;
+  border-bottom: 2px solid var(--ink) !important;
+  transition: none !important;
+  width: 34px !important;
+  height: 34px !important;
 }
 
 .maplibregl-ctrl-group button:last-child {
   border-bottom: none !important;
 }
 
-.maplibregl-ctrl-icon {
-  filter: invert(0.85) hue-rotate(180deg);
+.maplibregl-ctrl-group button:hover {
+  background-color: var(--ink) !important;
+}
+
+.maplibregl-ctrl-group button:hover .maplibregl-ctrl-icon {
+  filter: invert(1);
 }
 
 .maplibregl-popup-content {
-  background-color: #0d1524 !important;
-  color: #f1f5f9 !important;
-  border: 1px solid rgba(34, 211, 238, 0.3) !important;
-  border-radius: 8px !important;
-  padding: 12px !important;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55) !important;
+  background-color: var(--paper) !important;
+  color: var(--ink) !important;
+  border: 2px solid var(--ink) !important;
+  border-radius: 0px !important;
+  padding: 14px 18px !important;
+  box-shadow: 4px 4px 0px var(--ink) !important;
 }
 
 .maplibregl-popup-tip {
-  border-top-color: #0d1524 !important;
-  border-bottom-color: #0d1524 !important;
+  border-top-color: var(--ink) !important;
+  border-bottom-color: var(--ink) !important;
 }
 
 .maplibregl-popup-close-button {
-  color: #94a3b8 !important;
+  color: var(--ink) !important;
   padding: 4px 8px !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+}
+
+.maplibregl-popup-close-button:hover {
+  background-color: var(--ink) !important;
+  color: var(--paper) !important;
 }

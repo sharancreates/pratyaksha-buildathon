@@ -70,27 +70,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const criticalCount = alerts.filter((a) => a.severity === 'critical').length;
 
   return (
-    <div className="min-h-screen bg-[#080D18] text-slate-100 flex">
+    <div className="min-h-screen bg-white text-black flex font-sans">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex lg:flex-col w-64 shrink-0 bg-[#0D1524] border-r border-slate-800/80 sticky top-0 h-screen">
-        <div className="px-5 py-5 border-b border-slate-800/80">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-md bg-cyan-500/15 border border-cyan-400/35 flex items-center justify-center shrink-0">
-              <Globe2 className="w-4 h-4 text-cyan-400" />
+      <aside className="hidden lg:flex lg:flex-col w-72 shrink-0 bg-white border-r-2 border-black sticky top-0 h-screen z-20">
+        <div className="px-6 py-6 border-b-2 border-black">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-black text-white flex items-center justify-center shrink-0">
+              <Globe2 className="w-5 h-5 text-white" aria-hidden="true" />
             </div>
             <div className="min-w-0">
-              <div className="text-sm font-bold tracking-wider text-slate-100 whitespace-nowrap">
+              <div className="text-base font-black tracking-widest text-black uppercase leading-none">
                 PRATYAKSHA
               </div>
-              <div className="text-[11px] text-slate-400 truncate">
-                Environmental Command
+              <div className="text-[10px] font-mono font-bold tracking-wider text-[#4B5563] uppercase mt-1">
+                SATELLITE INTELLIGENCE
               </div>
             </div>
           </div>
         </div>
 
-        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto" aria-label="Primary Navigation">
-          {NAV_ITEMS.map((item) => {
+        <nav className="nav flex-1 px-4 py-6 space-y-1.5 overflow-y-auto" aria-label="Primary Navigation">
+          {NAV_ITEMS.map((item, idx) => {
             const Icon = item.icon;
             return (
               <NavLink
@@ -98,27 +98,34 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 to={item.path}
                 end={item.path === '/'}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] font-medium transition-colors whitespace-nowrap ${
+                  `flex items-center justify-between px-4 py-3 text-xs font-black uppercase tracking-wider transition-none ${
                     isActive
-                      ? 'bg-[#111D2E] text-cyan-300 border border-cyan-500/30'
-                      : 'text-slate-400 hover:text-slate-100 hover:bg-[#111D2E]/60 border border-transparent'
+                      ? 'bg-black text-white'
+                      : 'text-black hover:text-black hover:bg-[#E5E7EB]'
                   }`
                 }
               >
-                <Icon className="w-4 h-4 shrink-0" />
-                <span className="truncate">{item.label}</span>
+                <div className="flex items-center gap-3 truncate">
+                  <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  <span className="truncate">{item.label}</span>
+                </div>
+                <span className="text-[10px] font-mono opacity-50 tabular-nums" aria-hidden="true">
+                  0{idx + 1}
+                </span>
               </NavLink>
             );
           })}
         </nav>
 
-        <div className="p-4 border-t border-slate-800/80 space-y-2.5 text-xs">
-          <div className="flex items-center justify-between text-slate-400">
-            <span>Telemetry Mode</span>
-            <span className="font-mono text-amber-400 font-medium">DEMO MODE</span>
+        <div className="p-5 border-t-2 border-black space-y-2 text-xs">
+          <div className="flex items-center justify-between text-black">
+            <span className="font-bold uppercase tracking-wider text-[11px]">MODE</span>
+            <span className="font-mono text-[11px] font-black px-1.5 py-0.5 border border-black bg-[#E5E7EB]">
+              DEMO ENGINE
+            </span>
           </div>
-          <div className="text-[11px] text-slate-500 leading-relaxed">
-            Deterministic synthetic fallback active. Earth Engine credentials optional.
+          <div className="text-[10px] font-mono text-[#4B5563] leading-relaxed">
+            SYNTHETIC TELEMETRY FALLBACK ACTIVE. SATELLITE TILES EMULATED DETERMINISTICALLY.
           </div>
         </div>
       </aside>
@@ -130,33 +137,35 @@ export function Layout({ children }: { children: React.ReactNode }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 lg:hidden bg-black/70"
+            className="fixed inset-0 z-50 lg:hidden bg-black/60 backdrop-blur-sm"
             onClick={() => setMobileMenuOpen(false)}
           >
             <motion.aside
-              initial={{ x: -260 }}
+              initial={{ x: -280 }}
               animate={{ x: 0 }}
-              exit={{ x: -260 }}
-              transition={{ duration: 0.18 }}
-              className="w-64 h-full bg-[#0D1524] border-r border-slate-800 p-4 flex flex-col"
+              exit={{ x: -280 }}
+              transition={{ duration: 0.1 }}
+              className="w-72 h-full bg-white border-r-2 border-black p-5 flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-                <div className="flex items-center gap-2">
-                  <Globe2 className="w-4 h-4 text-cyan-400" />
-                  <span className="text-sm font-bold tracking-wider">PRATYAKSHA</span>
+              <div className="flex items-center justify-between pb-5 border-b-2 border-black">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 bg-black text-white flex items-center justify-center">
+                    <Globe2 className="w-4 h-4" aria-hidden="true" />
+                  </div>
+                  <span className="text-sm font-black uppercase tracking-widest">PRATYAKSHA</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-1.5 text-slate-400 hover:text-slate-100"
+                  className="p-1.5 border border-black hover:bg-black hover:text-white"
                   aria-label="Close menu"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
-              <nav className="mt-4 space-y-1 flex-1">
-                {NAV_ITEMS.map((item) => {
+              <nav className="nav mt-5 space-y-1.5 flex-1" aria-label="Mobile Primary Navigation">
+                {NAV_ITEMS.map((item, idx) => {
                   const Icon = item.icon;
                   return (
                     <NavLink
@@ -165,15 +174,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
                       end={item.path === '/'}
                       onClick={() => setMobileMenuOpen(false)}
                       className={({ isActive }) =>
-                        `flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium ${
+                        `flex items-center justify-between px-3.5 py-3 text-xs font-black uppercase tracking-wider transition-none ${
                           isActive
-                            ? 'bg-[#111D2E] text-cyan-300 border border-cyan-500/30'
-                            : 'text-slate-400 hover:text-slate-100'
+                            ? 'bg-black text-white'
+                            : 'text-black hover:bg-[#E5E7EB]'
                         }`
                       }
                     >
-                      <Icon className="w-4 h-4 shrink-0" />
-                      <span>{item.label}</span>
+                      <div className="flex items-center gap-3">
+                        <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
+                        <span>{item.label}</span>
+                      </div>
+                      <span className="text-[10px] font-mono opacity-50">0{idx + 1}</span>
                     </NavLink>
                   );
                 })}
@@ -186,28 +198,28 @@ export function Layout({ children }: { children: React.ReactNode }) {
       {/* Main Column */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Command Header */}
-        <header className="sticky top-0 z-30 h-14 bg-[#0D1524]/95 backdrop-blur-md border-b border-slate-800/80 px-4 lg:px-6 flex items-center justify-between gap-4">
+        <header className="sticky top-0 z-30 h-16 bg-white/95 backdrop-blur-md border-b-2 border-black px-4 lg:px-8 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden p-2 -ml-1 text-slate-400 hover:text-slate-100 rounded-md"
-              aria-label="Open navigation"
+              className="lg:hidden p-2 border-2 border-black hover:bg-black hover:text-white"
+              aria-label="Open navigation menu"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="w-4 h-4" />
             </button>
             <div className="flex items-center gap-2 text-xs sm:text-sm min-w-0">
-              <span className="font-semibold text-slate-100 whitespace-nowrap">
+              <span className="font-black uppercase tracking-widest text-black whitespace-nowrap">
                 {currentNav.label}
               </span>
-              <span className="text-slate-600 hidden sm:inline" aria-hidden="true">
+              <span className="text-[#4B5563] hidden sm:inline" aria-hidden="true">
                 /
               </span>
-              <span className="hidden md:inline-flex items-center gap-1.5 text-xs text-slate-400 whitespace-nowrap font-mono">
-                <Activity className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Intelligence Active</span>
+              <span className="hidden md:inline-flex items-center gap-1.5 text-[11px] text-[#4B5563] whitespace-nowrap font-mono font-medium">
+                <Activity className="w-3.5 h-3.5 text-black" aria-hidden="true" />
+                <span>INTELLIGENCE STREAM ACTIVE</span>
                 <span aria-hidden="true">·</span>
-                <span>Sync 2026-11-19 08:15 UTC</span>
+                <span>SYNC 2026-11-19 08:15 UTC</span>
               </span>
             </div>
           </div>
@@ -221,11 +233,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
               id="global-municipality-select"
               value={municipality}
               onChange={(e) => setMunicipality(e.target.value as MunicipalityId)}
-              className="h-9 bg-[#111D2E] border border-slate-700/80 rounded-md px-3 text-xs font-medium text-slate-100 focus:outline-none focus:border-cyan-400 cursor-pointer"
+              className="h-10 bg-white border-2 border-black px-3 text-xs font-black uppercase tracking-wider text-black cursor-pointer hover:bg-black hover:text-white"
             >
               {MUNICIPALITY_OPTIONS.map((city) => (
-                <option key={city.id} value={city.id} className="bg-[#0D1524] text-slate-100">
-                  {city.name} ({city.shortCorp})
+                <option key={city.id} value={city.id} className="bg-white text-black">
+                  {city.name} [{city.shortCorp}]
                 </option>
               ))}
             </select>
@@ -238,32 +250,33 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   setNotifOpen((v) => !v);
                   setProfileOpen(false);
                 }}
-                className="relative h-9 w-9 flex items-center justify-center rounded-md bg-[#111D2E] border border-slate-700/80 text-slate-300 hover:text-cyan-300 hover:border-cyan-500/40 transition-colors"
-                aria-label="Notification Center"
+                className="relative h-10 w-10 flex items-center justify-center border-2 border-black bg-white text-black hover:bg-black hover:text-white transition-none"
+                aria-label={`Notification Center (${alerts.length} alerts)`}
               >
                 <Bell className="w-4 h-4" />
                 {criticalCount > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded bg-red-500 text-[10px] font-mono font-bold text-white flex items-center justify-center">
+                  <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-4 px-1 bg-[#FF0000] text-[10px] font-mono font-black text-white flex items-center justify-center border border-black">
                     {criticalCount}
                   </span>
                 )}
               </button>
 
               {notifOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-[#111D2E] border border-slate-700/90 rounded-lg shadow-2xl z-50 overflow-hidden">
-                  <div className="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
-                    <span className="text-xs font-semibold text-slate-100">
-                      Active Anomaly Alerts ({alerts.length})
+                <div className="absolute right-0 mt-2 w-84 sm:w-96 bg-white border-2 border-black shadow-[6px_6px_0px_#000] z-50 overflow-hidden">
+                  <div className="px-5 py-4 border-b-2 border-black flex items-center justify-between bg-black text-white">
+                    <span className="text-xs font-black uppercase tracking-wider">
+                      ANOMALY ALERTS [{alerts.length}]
                     </span>
                     <button
                       type="button"
                       onClick={() => setNotifOpen(false)}
-                      className="text-slate-400 hover:text-slate-200"
+                      className="text-white hover:text-[#FF0000] p-1"
+                      aria-label="Close alerts"
                     >
-                      <X className="w-3.5 h-3.5" />
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
-                  <div className="max-h-72 overflow-y-auto divide-y divide-slate-800/80">
+                  <div className="max-h-80 overflow-y-auto divide-y-2 border-black">
                     {alerts.map((a) => (
                       <button
                         key={a.id}
@@ -273,26 +286,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
                           setNotifOpen(false);
                           navigate('/anomalies');
                         }}
-                        className="w-full text-left px-4 py-3 hover:bg-[#0D1524] transition-colors"
+                        className="w-full text-left p-4 hover:bg-black hover:text-white transition-none group"
                       >
                         <div className="flex items-center justify-between text-[11px] font-mono">
                           <span
                             className={
                               a.severity === 'critical'
-                                ? 'text-red-400 font-semibold'
-                                : 'text-amber-400 font-semibold'
+                                ? 'text-[#FF0000] font-black group-hover:text-[#FF0000]'
+                                : 'font-bold'
                             }
                           >
-                            {a.severity.toUpperCase()} · {a.id}
+                            [{a.severity.toUpperCase()}] {a.id}
                           </span>
-                          <span className="text-slate-400 tabular-nums">
-                            Risk {a.consensusRiskScore}/100
+                          <span className="text-[#4B5563] group-hover:text-[#D1D5DB] tabular-nums font-bold">
+                            RISK {a.consensusRiskScore}/100
                           </span>
                         </div>
-                        <div className="mt-1 text-xs font-medium text-slate-100">
+                        <div className="mt-1 text-xs font-black uppercase tracking-tight">
                           {a.wardName}
                         </div>
-                        <div className="mt-0.5 text-[11px] text-slate-400">
+                        <div className="mt-0.5 text-[11px] text-[#4B5563] group-hover:text-[#D1D5DB]">
                           {a.indicator}: {a.observedValue} {a.unit} (baseline {a.baselineValue})
                         </div>
                       </button>
@@ -310,27 +323,28 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   setProfileOpen((v) => !v);
                   setNotifOpen(false);
                 }}
-                className="h-9 px-3 flex items-center gap-2 rounded-md bg-[#111D2E] border border-slate-700/80 text-xs font-medium text-slate-200 hover:border-cyan-500/40 transition-colors whitespace-nowrap"
+                className="h-10 px-4 flex items-center gap-2 border-2 border-black bg-white text-xs font-black uppercase tracking-wider text-black hover:bg-black hover:text-white transition-none whitespace-nowrap"
+                aria-label={user ? `Signed in as ${user.displayName || 'Officer'}` : 'Officer Sign In'}
               >
-                <UserIcon className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                <span className="hidden sm:inline max-w-[120px] truncate">
-                  {user ? user.displayName || 'Officer' : 'Officer Sign In'}
+                <UserIcon className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                <span className="hidden sm:inline max-w-[130px] truncate">
+                  {user ? user.displayName || 'Officer' : 'OFFICER SIGN IN'}
                 </span>
               </button>
 
               {profileOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-[#111D2E] border border-slate-700/90 rounded-lg shadow-2xl z-50 p-4 space-y-3">
+                <div className="absolute right-0 mt-2 w-72 bg-white border-2 border-black shadow-[6px_6px_0px_#000] z-50 p-5 space-y-4">
                   {user ? (
                     <>
-                      <div className="space-y-0.5">
-                        <div className="text-xs font-semibold text-slate-100 truncate">
+                      <div className="space-y-1">
+                        <div className="text-xs font-black uppercase tracking-wider text-black truncate">
                           {user.displayName || 'Municipal Officer'}
                         </div>
-                        <div className="text-[11px] font-mono text-slate-400 truncate">
+                        <div className="text-[11px] font-mono text-[#4B5563] truncate">
                           {user.email}
                         </div>
-                        <div className="text-[11px] text-emerald-400">
-                          Cloud Persistence Enabled
+                        <div className="text-[10px] font-mono font-bold text-black border border-black inline-block px-1.5 py-0.5 mt-1 bg-[#E5E7EB]">
+                          PERSISTENCE ACTIVE
                         </div>
                       </div>
                       <button
@@ -339,21 +353,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
                           setProfileOpen(false);
                           void logout();
                         }}
-                        className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-md bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition-colors"
+                        className="button-sm w-full"
                       >
-                        <LogOut className="w-3.5 h-3.5" />
-                        Sign Out
+                        <LogOut className="w-3.5 h-3.5 mr-2" aria-hidden="true" />
+                        SIGN OUT
                       </button>
                     </>
                   ) : (
                     <>
-                      <div className="space-y-1">
-                        <div className="text-xs font-semibold text-slate-100">
-                          Observer Demo Session
+                      <div className="space-y-1.5">
+                        <div className="text-xs font-black uppercase tracking-wider text-black">
+                          OBSERVER DEMO
                         </div>
-                        <p className="text-[11px] text-slate-400 leading-relaxed">
-                          Sign in with Google to save Environment Action Plans, anomaly reviews,
-                          and harmonization runs to Firestore.
+                        <p className="text-[11px] text-[#4B5563] leading-relaxed">
+                          Authenticate with Google to enable Firestore cloud persistence for
+                          Environment Action Plans and anomaly reviews.
                         </p>
                       </div>
                       <button
@@ -362,10 +376,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
                           setProfileOpen(false);
                           void signInWithGoogle();
                         }}
-                        className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-md bg-cyan-500/15 border border-cyan-400/40 hover:bg-cyan-500/25 text-xs font-medium text-cyan-200 transition-colors"
+                        className="button-sm w-full"
                       >
-                        <LogIn className="w-3.5 h-3.5" />
-                        Sign In with Google
+                        <LogIn className="w-3.5 h-3.5 mr-2" aria-hidden="true" />
+                        SIGN IN
                       </button>
                     </>
                   )}
@@ -376,39 +390,35 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Page Viewport */}
-        <main className="flex-1 p-4 lg:p-6 max-w-[1600px] w-full mx-auto">
+        <main className="flex-1 p-4 lg:p-8 max-w-[1600px] w-full mx-auto space-y-8">
           {children}
         </main>
       </div>
 
       {/* Toast Stack */}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none">
         <AnimatePresence>
           {toasts.map((t) => (
             <motion.div
               key={t.id}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 12 }}
-              transition={{ duration: 0.16 }}
-              className="pointer-events-auto bg-[#111D2E] border border-slate-700 rounded-md px-4 py-3 shadow-xl flex items-start justify-between gap-3"
+              exit={{ opacity: 0, y: 16 }}
+              transition={{ duration: 0.1 }}
+              className="pointer-events-auto bg-white border-2 border-black p-4 shadow-[5px_5px_0px_#000] flex items-start justify-between gap-3"
             >
               <div className="min-w-0">
                 <div
-                  className={`text-xs font-semibold ${
-                    t.variant === 'success'
-                      ? 'text-emerald-400'
-                      : t.variant === 'warning'
-                      ? 'text-amber-400'
-                      : t.variant === 'error'
-                      ? 'text-red-400'
-                      : 'text-cyan-300'
+                  className={`text-xs font-black uppercase tracking-wider ${
+                    t.variant === 'error'
+                      ? 'text-[#FF0000]'
+                      : 'text-black'
                   }`}
                 >
                   {t.title}
                 </div>
                 {t.description && (
-                  <div className="mt-0.5 text-[11px] text-slate-400 leading-snug">
+                  <div className="mt-1 text-[11px] text-[#4B5563] font-mono leading-snug">
                     {t.description}
                   </div>
                 )}
@@ -416,10 +426,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={() => dismissToast(t.id)}
-                className="text-slate-500 hover:text-slate-300 shrink-0"
+                className="text-black hover:text-[#FF0000] shrink-0 p-1"
                 aria-label="Dismiss notification"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-4 h-4" />
               </button>
             </motion.div>
           ))}

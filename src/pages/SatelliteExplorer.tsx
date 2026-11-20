@@ -143,34 +143,46 @@ export function SatelliteExplorer() {
     }));
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <section className="bg-[#111D2E] border border-slate-800/90 rounded-lg px-5 py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div>
-          <div className="text-xs font-mono text-amber-400">
-            DEMO MODE · DETERMINISTIC SYNTHETIC SATELLITE CATALOG (NON-LIVE TELEMETRY)
-          </div>
-          <h1 className="mt-1 text-xl font-semibold text-slate-100">
-            Satellite Data Explorer & Geospatial Harmonization Engine
-          </h1>
-          <p className="mt-0.5 text-xs text-slate-400">
-            Normalize multi-mission CRS projections, spatial resolutions (10m–1000m), and temporal cadences onto a unified municipal grid.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          disabled={runningPipeline}
-          onClick={() => void handleRunIngestAndHarmonize()}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-cyan-500/20 border border-cyan-400/50 text-xs font-semibold text-cyan-100 hover:bg-cyan-500/30 disabled:opacity-50 transition-colors whitespace-nowrap"
+    <div className="space-y-8">
+      {/* Hero Header */}
+      <section className="hero-compact border-2 border-black bg-white relative overflow-hidden flex flex-col justify-between">
+        <span
+          aria-hidden="true"
+          className="index absolute right-4 top-2 text-[#E5E7EB] pointer-events-none select-none"
         >
-          {runningPipeline ? (
-            <RefreshCw className="w-4 h-4 animate-spin" />
-          ) : (
-            <Play className="w-4 h-4" />
-          )}
-          {runningPipeline ? 'Harmonizing Tiles...' : 'Run Ingestion & Harmonization'}
-        </button>
+          02
+        </span>
+
+        <div className="relative z-10">
+          <div className="text-[11px] font-mono font-bold tracking-wider text-[#4B5563] uppercase mb-3">
+            CATALOG · CRS REPROJECTION · TEMPORAL HARMONIZATION
+          </div>
+
+          <h1 className="display mb-4 text-black">
+            <span className="outline">SATELLITE</span>
+            <br />
+            HARMONIZER
+          </h1>
+
+          <p className="lead mb-6 text-[#4B5563]">
+            Normalize multi-mission CRS projections, spatial resolutions (10m–1000m), and temporal
+            cadences onto a unified municipal grid.
+          </p>
+
+          <button
+            type="button"
+            disabled={runningPipeline}
+            onClick={() => void handleRunIngestAndHarmonize()}
+            className="button-sm bg-black text-white hover:bg-white hover:text-black disabled:opacity-50"
+          >
+            {runningPipeline ? (
+              <RefreshCw className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
+            ) : (
+              <Play className="w-4 h-4 mr-2" aria-hidden="true" />
+            )}
+            {runningPipeline ? 'HARMONIZING TILES...' : 'RUN HARMONIZATION'}
+          </button>
+        </div>
       </section>
 
       {/* Mission Cards */}
@@ -182,25 +194,33 @@ export function SatelliteExplorer() {
               key={m.id}
               type="button"
               onClick={() => setSelectedMission(isSelected ? 'all' : m.id)}
-              className={`text-left bg-[#111D2E] rounded-lg p-4 border transition-colors ${
+              className={`text-left p-5 border-2 transition-none group ${
                 isSelected
-                  ? 'border-cyan-400/70 bg-cyan-950/20'
-                  : 'border-slate-800/90 hover:border-slate-700'
+                  ? 'border-black bg-black text-white'
+                  : 'border-black bg-white text-black hover:bg-black hover:text-white'
               }`}
             >
               <div className="flex items-center justify-between text-[11px] font-mono">
-                <span className="text-cyan-400">{m.agency}</span>
-                <span className="text-emerald-400 uppercase">{m.healthStatus}</span>
+                <span className="font-bold">{m.agency}</span>
+                <span
+                  className={`uppercase font-black px-1 border ${
+                    isSelected ? 'border-white text-white' : 'border-black text-black group-hover:border-white group-hover:text-white'
+                  }`}
+                >
+                  {m.healthStatus}
+                </span>
               </div>
-              <div className="mt-1.5 text-sm font-semibold text-slate-100 flex items-center gap-2">
-                <Satellite className="w-4 h-4 text-slate-400 shrink-0" />
+              <div className="mt-2 text-base font-black uppercase tracking-tight flex items-center gap-2">
+                <Satellite className="w-4 h-4 shrink-0" aria-hidden="true" />
                 <span className="truncate">{m.name}</span>
               </div>
-              <div className="mt-1 text-xs text-slate-400 truncate">{m.sensor}</div>
-              <div className="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-mono text-slate-300 tabular-nums">
-                <span>Res: {m.spatialResolutionM}m</span>
-                <span>Revisit: {m.revisitDays}d</span>
-                <span>{m.activeTiles} tiles</span>
+              <div className="mt-1 text-xs text-[#4B5563] group-hover:text-[#D1D5DB] truncate">
+                {m.sensor}
+              </div>
+              <div className="mt-4 pt-3 border-t border-black/20 group-hover:border-white/20 flex items-center justify-between text-[11px] font-mono tabular-nums font-bold">
+                <span>{m.spatialResolutionM}M RES</span>
+                <span>{m.revisitDays}D REVISIT</span>
+                <span>{m.activeTiles} TILES</span>
               </div>
             </button>
           );
@@ -208,64 +228,64 @@ export function SatelliteExplorer() {
       </section>
 
       {/* Filter Control Bar */}
-      <section className="bg-[#111D2E] border border-slate-800/90 rounded-lg p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <section className="border-2 border-black bg-white p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
         <div>
-          <label className="block text-[11px] font-mono text-slate-400 mb-1.5" htmlFor="sat-mission">
-            Mission Filter
+          <label className="block text-[11px] font-black uppercase tracking-wider text-black mb-2" htmlFor="sat-mission">
+            MISSION FILTER
           </label>
           <select
             id="sat-mission"
             value={selectedMission}
             onChange={(e) => setSelectedMission(e.target.value as SatelliteMissionId | 'all')}
-            className="w-full h-9 bg-[#0D1524] border border-slate-700 rounded-md px-2.5 text-xs text-slate-100"
+            className="w-full h-10 bg-white border-2 border-black px-3 text-xs font-bold uppercase text-black"
           >
-            <option value="all">All 4 Missions</option>
+            <option value="all">ALL 4 MISSIONS</option>
             {missions.map((m) => (
               <option key={m.id} value={m.id}>
-                {m.name}
+                {m.name.toUpperCase()}
               </option>
             ))}
           </select>
         </div>
 
         <div>
-          <label className="block text-[11px] font-mono text-slate-400 mb-1.5" htmlFor="sat-band">
-            Spectral Band / Product
+          <label className="block text-[11px] font-black uppercase tracking-wider text-black mb-2" htmlFor="sat-band">
+            SPECTRAL BAND
           </label>
           <select
             id="sat-band"
             value={selectedBand}
             onChange={(e) => setSelectedBand(e.target.value)}
-            className="w-full h-9 bg-[#0D1524] border border-slate-700 rounded-md px-2.5 text-xs text-slate-100"
+            className="w-full h-10 bg-white border-2 border-black px-3 text-xs font-bold uppercase text-black"
           >
-            <option value="all">All Spectral Bands</option>
-            <option value="NDVI">B4/B8 — NDVI Vegetation</option>
-            <option value="LST">B10/B11 / MODIS — Thermal LST</option>
-            <option value="NO2">TROPOMI — Tropospheric NO₂</option>
-            <option value="VV">Sentinel-1 — SAR VV/VH</option>
-            <option value="NDWI">B3/B8 — NDWI Surface Water</option>
+            <option value="all">ALL SPECTRAL BANDS</option>
+            <option value="NDVI">B4/B8 — NDVI VEGETATION</option>
+            <option value="LST">B10/B11 / MODIS — THERMAL LST</option>
+            <option value="NO2">TROPOMI — TROPOSPHERIC NO₂</option>
+            <option value="VV">SENTINEL-1 — SAR VV/VH</option>
+            <option value="NDWI">B3/B8 — NDWI SURFACE WATER</option>
           </select>
         </div>
 
         <div>
-          <label className="block text-[11px] font-mono text-slate-400 mb-1.5" htmlFor="sat-res">
-            Harmonized Grid Resolution
+          <label className="block text-[11px] font-black uppercase tracking-wider text-black mb-2" htmlFor="sat-res">
+            GRID RESOLUTION
           </label>
           <select
             id="sat-res"
             value={targetResolution}
             onChange={(e) => setTargetResolution(Number(e.target.value))}
-            className="w-full h-9 bg-[#0D1524] border border-slate-700 rounded-md px-2.5 text-xs text-slate-100"
+            className="w-full h-10 bg-white border-2 border-black px-3 text-xs font-bold uppercase text-black"
           >
-            <option value={10}>10m High-Res (Sentinel Grid)</option>
-            <option value={30}>30m Standard Municipal Grid</option>
-            <option value={100}>100m Macro Regional Grid</option>
+            <option value={10}>10M HIGH-RES (SENTINEL)</option>
+            <option value={30}>30M STANDARD MUNICIPAL</option>
+            <option value={100}>100M MACRO REGIONAL</option>
           </select>
         </div>
 
         <div>
-          <label className="block text-[11px] font-mono text-slate-400 mb-1.5" htmlFor="sat-cloud">
-            Max Cloud Coverage: <span className="text-cyan-300 tabular-nums">{maxCloud}%</span>
+          <label className="block text-[11px] font-black uppercase tracking-wider text-black mb-2" htmlFor="sat-cloud">
+            MAX CLOUD: <span className="tabular-nums font-mono">{maxCloud}%</span>
           </label>
           <input
             id="sat-cloud"
@@ -275,105 +295,120 @@ export function SatelliteExplorer() {
             step={5}
             value={maxCloud}
             onChange={(e) => setMaxCloud(Number(e.target.value))}
-            className="w-full accent-cyan-400 mt-2"
+            className="w-full accent-black mt-3 cursor-pointer"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="block text-[11px] font-mono text-slate-400 mb-1.5" htmlFor="sat-start">
-              From
+            <label className="block text-[11px] font-black uppercase tracking-wider text-black mb-2" htmlFor="sat-start">
+              FROM
             </label>
             <input
               id="sat-start"
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full h-9 bg-[#0D1524] border border-slate-700 rounded-md px-2 text-[11px] font-mono text-slate-200"
-            />
+              className="w-full h-10 bg-white border-2 border-black px-2 text-xs font-mono font-bold text-black"
+            >
+            </input>
           </div>
           <div>
-            <label className="block text-[11px] font-mono text-slate-400 mb-1.5" htmlFor="sat-end">
-              To
+            <label className="block text-[11px] font-black uppercase tracking-wider text-black mb-2" htmlFor="sat-end">
+              TO
             </label>
             <input
               id="sat-end"
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full h-9 bg-[#0D1524] border border-slate-700 rounded-md px-2 text-[11px] font-mono text-slate-200"
-            />
+              className="w-full h-10 bg-white border-2 border-black px-2 text-xs font-mono font-bold text-black"
+            >
+            </input>
           </div>
         </div>
       </section>
 
       {/* Harmonization Pipeline Telemetry */}
       {harmonization && (
-        <section className="grid grid-cols-1 xl:grid-cols-12 gap-5">
-          <div className="xl:col-span-7 bg-[#111D2E] border border-slate-800/90 rounded-lg p-5 space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-2">
+        <section className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+          <div className="xl:col-span-7 border-2 border-black bg-white p-6 space-y-5">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-black pb-3">
               <div className="flex items-center gap-2">
-                <Layers className="w-4 h-4 text-cyan-400" />
-                <h2 className="text-sm font-semibold text-slate-100">
-                  Geospatial Harmonization Pipeline Status
+                <Layers className="w-4 h-4 text-black" aria-hidden="true" />
+                <h2 className="text-xs font-black uppercase tracking-widest text-black">
+                  HARMONIZATION PIPELINE STATUS
                 </h2>
               </div>
-              <span className="text-[11px] font-mono text-slate-400">
-                Job {harmonization.jobId} · Target {harmonization.targetCrs} @ {harmonization.targetResolutionM}m
+              <span className="text-[11px] font-mono font-bold text-[#4B5563]">
+                JOB {harmonization.jobId} · {harmonization.targetCrs} @ {harmonization.targetResolutionM}M
               </span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-              <div className="bg-[#0D1524] border border-slate-800 rounded-md p-3">
-                <div className="text-[11px] text-slate-400">Raw Obs</div>
-                <div className="mt-1 text-lg font-mono font-bold text-slate-100 tabular-nums">
+              <div className="border-2 border-black p-3 bg-white hover:bg-black hover:text-white transition-none group">
+                <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                  RAW OBS
+                </div>
+                <div className="mt-1 text-2xl font-black tabular-nums">
                   {harmonization.rawObservationCount}
                 </div>
               </div>
-              <div className="bg-[#0D1524] border border-slate-800 rounded-md p-3">
-                <div className="text-[11px] text-slate-400">Processed</div>
-                <div className="mt-1 text-lg font-mono font-bold text-emerald-400 tabular-nums">
+              <div className="border-2 border-black p-3 bg-white hover:bg-black hover:text-white transition-none group">
+                <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                  PROCESSED
+                </div>
+                <div className="mt-1 text-2xl font-black tabular-nums">
                   {harmonization.processedObservationCount}
                 </div>
               </div>
-              <div className="bg-[#0D1524] border border-slate-800 rounded-md p-3">
-                <div className="text-[11px] text-slate-400">Coverage</div>
-                <div className="mt-1 text-lg font-mono font-bold text-cyan-300 tabular-nums">
+              <div className="border-2 border-black p-3 bg-white hover:bg-black hover:text-white transition-none group">
+                <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                  COVERAGE
+                </div>
+                <div className="mt-1 text-2xl font-black tabular-nums">
                   {harmonization.spatialCoveragePct}%
                 </div>
               </div>
-              <div className="bg-[#0D1524] border border-slate-800 rounded-md p-3">
-                <div className="text-[11px] text-slate-400">Duration</div>
-                <div className="mt-1 text-lg font-mono font-bold text-slate-100 tabular-nums">
+              <div className="border-2 border-black p-3 bg-white hover:bg-black hover:text-white transition-none group">
+                <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                  DURATION
+                </div>
+                <div className="mt-1 text-2xl font-black tabular-nums">
                   {(harmonization.processingDurationMs / 1000).toFixed(2)}s
                 </div>
               </div>
-              <div className="bg-[#0D1524] border border-slate-800 rounded-md p-3">
-                <div className="text-[11px] text-slate-400">QA Failed</div>
-                <div className="mt-1 text-lg font-mono font-bold text-red-400 tabular-nums">
+              <div className="border-2 border-black p-3 bg-white hover:bg-black hover:text-white transition-none group">
+                <div className="text-[10px] font-black uppercase tracking-wider text-[#4B5563] group-hover:text-[#D1D5DB]">
+                  QA FAILED
+                </div>
+                <div className="mt-1 text-2xl font-black tabular-nums text-[#FF0000]">
                   {harmonization.failedIngestionCount}
                 </div>
               </div>
             </div>
 
-            <div className="space-y-2 pt-1">
+            <div className="space-y-2 pt-2">
               {harmonization.stages.map((st) => (
                 <div
                   key={st.stage}
-                  className="bg-[#0D1524] border border-slate-800/80 rounded-md px-3.5 py-2.5 flex items-start justify-between gap-3"
+                  className="border-2 border-black p-3 flex items-start justify-between gap-3 hover:bg-black hover:text-white transition-none group"
                 >
                   <div className="flex items-start gap-2.5 min-w-0">
                     <CheckCircle2
                       className={`w-4 h-4 mt-0.5 shrink-0 ${
-                        st.status === 'completed' ? 'text-emerald-400' : 'text-amber-400'
+                        st.status === 'completed' ? 'text-black group-hover:text-white' : 'text-[#FF0000]'
                       }`}
+                      aria-hidden="true"
                     />
                     <div>
-                      <div className="text-xs font-medium text-slate-100">{st.stage}</div>
-                      <div className="text-[11px] text-slate-400 mt-0.5">{st.detail}</div>
+                      <div className="text-xs font-black uppercase tracking-tight">{st.stage}</div>
+                      <div className="text-[11px] text-[#4B5563] group-hover:text-[#D1D5DB] mt-0.5">
+                        {st.detail}
+                      </div>
                     </div>
                   </div>
-                  <span className="text-[11px] font-mono text-slate-500 tabular-nums shrink-0">
+                  <span className="text-[11px] font-mono text-[#4B5563] group-hover:text-[#D1D5DB] tabular-nums font-bold shrink-0">
                     {st.durationMs}ms
                   </span>
                 </div>
@@ -382,46 +417,48 @@ export function SatelliteExplorer() {
           </div>
 
           {/* Data Acquisition Timeline */}
-          <div className="xl:col-span-5 bg-[#111D2E] border border-slate-800/90 rounded-lg p-5 flex flex-col justify-between gap-4">
+          <div className="xl:col-span-5 border-2 border-black bg-white p-6 flex flex-col justify-between gap-4">
             <div>
-              <h2 className="text-sm font-semibold text-slate-100">
-                Data Acquisition Coverage vs Cloud Mask
+              <h2 className="text-xs font-black uppercase tracking-widest text-black">
+                ACQUISITION COVERAGE VS CLOUD MASK
               </h2>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <p className="text-[11px] text-[#4B5563] mt-1">
                 Spatial usable coverage (%) and cloud interference (%) across filtered granules
               </p>
             </div>
-            <div className="h-56">
+            <div className="h-60">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={timelineData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
-                  <XAxis dataKey="date" stroke="#94A3B8" fontSize={11} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#94A3B8" fontSize={11} tickLine={false} axisLine={false} domain={[0, 100]} />
+                  <XAxis dataKey="date" stroke="#000000" fontSize={10} fontStyle="bold" tickLine={false} />
+                  <YAxis stroke="#000000" fontSize={10} tickLine={false} domain={[0, 100]} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#0D1524',
-                      borderColor: '#334155',
-                      fontSize: '12px',
-                      borderRadius: '6px',
+                      backgroundColor: '#FFFFFF',
+                      borderColor: '#000000',
+                      borderWidth: '2px',
+                      borderRadius: '0px',
+                      fontSize: '11px',
+                      fontWeight: 'bold',
                     }}
                   />
-                  <Bar dataKey="coverage" name="Usable Coverage (%)" fill="#22D3EE" radius={[3, 3, 0, 0]} />
-                  <Bar dataKey="cloud" name="Cloud Cover (%)" fill="#F59E0B" radius={[3, 3, 0, 0]} />
+                  <Bar dataKey="coverage" name="Coverage (%)" fill="#000000" maxBarSize={28} />
+                  <Bar dataKey="cloud" name="Cloud (%)" fill="#FF0000" maxBarSize={28} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
 
             {savedJobs.length > 0 && (
-              <div className="pt-3 border-t border-slate-800">
-                <div className="flex items-center gap-1.5 text-[11px] font-mono text-emerald-400 mb-2">
-                  <Database className="w-3.5 h-3.5" />
-                  <span>Firestore Synced Pipeline Runs ({savedJobs.length})</span>
+              <div className="pt-3 border-t-2 border-black">
+                <div className="flex items-center gap-1.5 text-[11px] font-mono font-bold text-black mb-2">
+                  <Database className="w-3.5 h-3.5" aria-hidden="true" />
+                  <span>FIRESTORE SYNCED RUNS ({savedJobs.length})</span>
                 </div>
-                <div className="space-y-1 max-h-24 overflow-y-auto text-[11px] font-mono text-slate-400">
+                <div className="space-y-1 max-h-24 overflow-y-auto text-[11px] font-mono text-[#4B5563]">
                   {savedJobs.slice(0, 3).map((j) => (
                     <div key={j.id} className="flex items-center justify-between">
-                      <span>{j.id} ({j.municipalityId})</span>
-                      <span className="tabular-nums text-slate-300">
-                        {j.processedCount}/{j.rawCount} · {j.durationMs}ms
+                      <span className="font-bold text-black">{j.id}</span>
+                      <span className="tabular-nums">
+                        {j.processedObservationCount} TILES · COMPLETED
                       </span>
                     </div>
                   ))}
@@ -433,70 +470,70 @@ export function SatelliteExplorer() {
       )}
 
       {/* Observations Table */}
-      <section className="bg-[#111D2E] border border-slate-800/90 rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+      <section className="border-2 border-black bg-white overflow-hidden">
+        <div className="px-6 py-4 border-b-2 border-black flex items-center justify-between bg-black text-white">
           <div className="flex items-center gap-2">
-            <DownloadCloud className="w-4 h-4 text-cyan-400" />
-            <h2 className="text-sm font-semibold text-slate-100">
-              Observation Granule Metadata ({observations.length} records)
+            <DownloadCloud className="w-4 h-4 text-white" aria-hidden="true" />
+            <h2 className="text-xs font-black uppercase tracking-widest text-white">
+              OBSERVATION GRANULE METADATA ({observations.length} RECORDS)
             </h2>
           </div>
-          <span className="text-[11px] font-mono text-amber-400">
+          <span className="text-[10px] font-mono font-bold uppercase text-white border border-white px-1.5 py-0.5">
             SYNTHETIC DEMO CATALOG
           </span>
         </div>
 
         {loading ? (
-          <div className="p-6 text-xs font-mono text-slate-400">Loading observations...</div>
+          <div className="p-8 text-xs font-mono font-bold text-black">LOADING OBSERVATIONS...</div>
         ) : observations.length === 0 ? (
-          <div className="p-8 text-center text-xs text-slate-400">
-            No observations match the current cloud coverage and band filters. Increase the cloud slider or reset band selection.
+          <div className="p-8 text-center text-xs text-[#4B5563]">
+            No observations match current filters. Increase cloud coverage slider or reset band selection.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#0D1524] text-[11px] font-mono text-slate-400 border-b border-slate-800">
+              <thead className="bg-[#E5E7EB] text-[10px] font-mono font-black uppercase text-black border-b-2 border-black">
                 <tr>
-                  <th className="px-4 py-2.5 font-medium">Granule ID</th>
-                  <th className="px-4 py-2.5 font-medium">Mission</th>
-                  <th className="px-4 py-2.5 font-medium">Acquired (UTC)</th>
-                  <th className="px-4 py-2.5 font-medium">Spectral Band</th>
-                  <th className="px-4 py-2.5 font-medium">CRS Transform</th>
-                  <th className="px-4 py-2.5 font-medium text-right">Resampling</th>
-                  <th className="px-4 py-2.5 font-medium text-right">Cloud</th>
-                  <th className="px-4 py-2.5 font-medium text-right">Status</th>
+                  <th className="px-5 py-3">GRANULE ID</th>
+                  <th className="px-5 py-3">MISSION</th>
+                  <th className="px-5 py-3">ACQUIRED (UTC)</th>
+                  <th className="px-5 py-3">SPECTRAL BAND</th>
+                  <th className="px-5 py-3">CRS TRANSFORM</th>
+                  <th className="px-5 py-3 text-right">RESAMPLING</th>
+                  <th className="px-5 py-3 text-right">CLOUD</th>
+                  <th className="px-5 py-3 text-right">STATUS</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/80 font-mono text-[11px]">
+              <tbody className="divide-y-2 divide-black font-mono text-[11px]">
                 {observations.map((obs) => (
-                  <tr key={obs.id} className="hover:bg-[#0D1524]/60">
-                    <td className="px-4 py-2.5 text-cyan-300 whitespace-nowrap">{obs.id}</td>
-                    <td className="px-4 py-2.5 text-slate-200 font-sans font-medium whitespace-nowrap">
+                  <tr key={obs.id} className="hover:bg-black hover:text-white transition-none group">
+                    <td className="px-5 py-3 font-bold text-black group-hover:text-white whitespace-nowrap">
+                      {obs.id}
+                    </td>
+                    <td className="px-5 py-3 font-sans font-black uppercase whitespace-nowrap">
                       {obs.missionName}
                     </td>
-                    <td className="px-4 py-2.5 text-slate-400 whitespace-nowrap tabular-nums">
+                    <td className="px-5 py-3 text-[#4B5563] group-hover:text-[#D1D5DB] whitespace-nowrap tabular-nums">
                       {obs.acquiredAt.replace('T', ' ').slice(0, 16)}
                     </td>
-                    <td className="px-4 py-2.5 text-slate-300 whitespace-nowrap">{obs.spectralBand}</td>
-                    <td className="px-4 py-2.5 text-slate-400 whitespace-nowrap">
+                    <td className="px-5 py-3 font-bold whitespace-nowrap">{obs.spectralBand}</td>
+                    <td className="px-5 py-3 text-[#4B5563] group-hover:text-[#D1D5DB] whitespace-nowrap">
                       {obs.crsSource} → {obs.crsTarget}
                     </td>
-                    <td className="px-4 py-2.5 text-right text-slate-300 tabular-nums whitespace-nowrap">
+                    <td className="px-5 py-3 text-right tabular-nums whitespace-nowrap">
                       {obs.resolutionSourceM}m → {obs.resolutionTargetM}m
                     </td>
-                    <td className="px-4 py-2.5 text-right text-slate-300 tabular-nums whitespace-nowrap">
+                    <td className="px-5 py-3 text-right tabular-nums whitespace-nowrap">
                       <span className="inline-flex items-center gap-1">
-                        <Cloud className="w-3 h-3 text-slate-500" />
+                        <Cloud className="w-3 h-3 text-[#4B5563] group-hover:text-[#D1D5DB]" aria-hidden="true" />
                         {obs.cloudCoveragePct.toFixed(1)}%
                       </span>
                     </td>
                     <td
-                      className={`px-4 py-2.5 text-right font-semibold uppercase ${
+                      className={`px-5 py-3 text-right font-black uppercase ${
                         obs.harmonizationStatus === 'harmonized'
-                          ? 'text-emerald-400'
-                          : obs.harmonizationStatus === 'pending'
-                          ? 'text-amber-400'
-                          : 'text-red-400'
+                          ? 'text-black group-hover:text-white'
+                          : 'text-[#FF0000]'
                       }`}
                     >
                       {obs.harmonizationStatus}

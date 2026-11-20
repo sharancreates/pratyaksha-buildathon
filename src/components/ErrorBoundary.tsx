@@ -26,26 +26,28 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-[#080D18] text-slate-100 flex items-center justify-center p-6">
-          <div className="max-w-lg w-full bg-[#111D2E] border border-red-500/30 rounded-lg p-6">
-            <div className="flex items-center gap-3 text-red-400">
-              <AlertTriangle className="w-5 h-5 shrink-0" />
-              <h2 className="text-base font-semibold">Command Module Recovery</h2>
+        <div className="min-h-screen bg-white text-black flex items-center justify-center p-6">
+          <div className="max-w-lg w-full bg-white border-2 border-black p-8 shadow-[8px_8px_0px_#000]">
+            <div className="flex items-center gap-3 text-[#FF0000]">
+              <AlertTriangle className="w-6 h-6 shrink-0" aria-hidden="true" />
+              <h2 className="text-lg font-black uppercase tracking-wider text-black">
+                SYSTEM RECOVERY PROTOCOL
+              </h2>
             </div>
-            <p className="mt-3 text-sm text-slate-300 leading-relaxed">
-              A component encountered an unexpected state error. Your server pipeline and saved
-              reports remain intact.
+            <p className="mt-4 text-sm text-[#4B5563] leading-relaxed">
+              A module encountered an unexpected state error. Underlying pipeline telemetry and
+              persisted documents remain safe.
             </p>
-            <pre className="mt-3 p-3 bg-[#080D18] border border-slate-800 rounded text-xs font-mono text-slate-400 overflow-x-auto">
+            <pre className="mt-4 p-4 bg-[#E5E7EB] border-2 border-black text-xs font-mono text-black overflow-x-auto">
               {this.state.message}
             </pre>
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="mt-5 inline-flex items-center gap-2 px-4 py-2 text-xs font-medium bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 rounded-md hover:bg-cyan-500/25 transition-colors"
+              className="button-sm mt-6 w-full"
             >
-              <RefreshCw className="w-3.5 h-3.5" />
-              Reload Command Center
+              <RefreshCw className="w-4 h-4 mr-2" aria-hidden="true" />
+              RELOAD COMMAND CENTER
             </button>
           </div>
         </div>
