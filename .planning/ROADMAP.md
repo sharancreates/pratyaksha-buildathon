@@ -19,8 +19,8 @@
 |-------|-------|------|--------|
 | **Phase 3** | Multi-Service Containerization & Local Compose Verification | Create optimized multi-stage Dockerfiles for Node Web BFF and Python FastAPI, plus unified `docker-compose.yml` with PostGIS. | **COMPLETED** |
 | **Phase 4** | GCP IAM Security, Artifact Registry & Secret Manager | Set up GCP project APIs, Artifact Registry repository, runtime Service Account with least-privilege IAM, and Secret Manager schemas. | **COMPLETED** |
-| **Phase 5** | Cloud SQL PostGIS & Cloud Firestore Database Provisioning | Provision PostgreSQL 15 + PostGIS instance in `asia-south1`, execute spatial migrations, and verify Firestore production rules. | **READY TO PLAN** |
-| **Phase 6** | Cloud Run Dual-Service Deployment & VPC Networking | Deploy Web BFF and Python GIS services to Cloud Run with Serverless VPC Connector and internal service-to-service proxying. | **PLANNED** |
+| **Phase 5** | Cloud SQL PostGIS & Cloud Firestore Database Provisioning | Provision PostgreSQL 15 + PostGIS instance in `asia-south1`, execute spatial migrations, and verify Firestore production rules. | **COMPLETED** |
+| **Phase 6** | Cloud Run Dual-Service Deployment & VPC Networking | Deploy Web BFF and Python GIS services to Cloud Run with Serverless VPC Connector and internal service-to-service proxying. | **READY TO PLAN** |
 | **Phase 7** | Cloud Build CI/CD Automation & Production Verification | Establish automated `cloudbuild.yaml` deployment pipeline, execute live smoke testing, and draft municipal operations runbook. | **PLANNED** |
 
 ---
@@ -62,10 +62,10 @@
 - [x] Author Secret Manager configuration templates for `DATABASE_URL`, `GEE_SERVICE_ACCOUNT_KEY`, and `FIREBASE_CONFIG`.
 
 ### Phase 5: Cloud SQL PostGIS & Cloud Firestore Database Provisioning
-- [ ] Formulate Cloud SQL PostgreSQL 15 provisioning commands with PostGIS spatial extension flags.
-- [ ] Verify execution of `backend/database/migrations/001_init_postgis.sql` on the managed instance.
-- [ ] Configure Cloud SQL Auth Proxy and Unix socket paths for container runtime connections.
-- [ ] Confirm Cloud Firestore native mode configuration in `asia-south1` and validate `firestore.rules` security policies.
+- [x] Formulate Cloud SQL PostgreSQL 15 provisioning commands with PostGIS spatial extension flags.
+- [x] Verify execution of `backend/database/migrations/001_init_postgis.sql` on the managed instance.
+- [x] Configure Cloud SQL Auth Proxy and Unix socket paths for container runtime connections.
+- [x] Confirm Cloud Firestore native mode configuration in `asia-south1` and validate `firestore.rules` security policies.
 
 ### Phase 6: Cloud Run Dual-Service Deployment & Serverless VPC Networking
 - [ ] Deploy `pratyaksha-geo-service` (Python FastAPI) to Cloud Run with environment variable and Secret Manager bindings.
