@@ -68,10 +68,10 @@
 - [x] Confirm Cloud Firestore native mode configuration in `asia-south1` and validate `firestore.rules` security policies.
 
 ### Phase 6: Cloud Run Dual-Service Deployment & Serverless VPC Networking
-- [ ] Deploy `pratyaksha-geo-service` (Python FastAPI) to Cloud Run with environment variable and Secret Manager bindings.
-- [ ] Deploy `pratyaksha-web-service` (Node.js React/BFF) to Cloud Run with public ingress and auto-scaling rules.
-- [ ] Implement reverse-proxy delegation in `server.ts` forwarding `/api/py/*` requests to the internal Cloud Run geo service endpoint.
-- [ ] Configure Serverless VPC Access connector for private internal communication to Cloud SQL without public IP exposure.
+- [x] Deploy `pratyaksha-geo-service` (Python FastAPI) to Cloud Run with environment variable and Secret Manager bindings.
+- [x] Deploy `pratyaksha-web-service` (Node.js React/BFF) to Cloud Run with public ingress and auto-scaling rules.
+- [x] Implement reverse-proxy delegation in `server.ts` forwarding `/api/py/*` requests to the internal Cloud Run geo service endpoint.
+- [x] Configure Serverless VPC Access connector for private internal communication to Cloud SQL without public IP exposure.
 
 ### Phase 7: Cloud Build CI/CD Automation & Production Verification
 - [ ] Author `cloudbuild.yaml` automated build and deploy pipeline with step-by-step test, build, push, and deploy tasks.

@@ -3,8 +3,8 @@
 ## Current Context
 - **Project**: PRATYAKSHA — Unified Satellite Environmental Intelligence Platform
 - **Current Milestone**: Milestone 2 (GCP Cloud-Native Production Deployment)
-- **Active Phase**: Phase 6 (Cloud Run Dual-Service Deployment & Serverless VPC Networking)
-- **Status**: Phase 5 (Cloud SQL PostGIS & Cloud Firestore Database Provisioning) completed and verified (45/45 tests passing). Ready for Phase 6 planning.
+- **Active Phase**: Phase 7 (Cloud Build CI/CD Automation & Production Verification)
+- **Status**: Phase 6 completed and verified (52 tests passing). Ready to plan and execute Phase 7.
 
 ---
 
@@ -15,9 +15,8 @@
 | **Phase 3** | Multi-Service Containerization & Local Compose Verification | Complete (Verified) |
 | **Phase 4** | GCP IAM Security, Artifact Registry & Secret Manager | Complete (Verified) |
 | **Phase 5** | Cloud SQL PostGIS & Cloud Firestore Database Provisioning | Complete (Verified) |
-| **Phase 6** | Cloud Run Dual-Service Deployment & VPC Networking | Ready to Plan |
-| **Phase 6** | Cloud Run Dual-Service Deployment & VPC Networking | Queued |
-| **Phase 7** | Cloud Build CI/CD Automation & Production Verification | Queued |
+| **Phase 6** | Cloud Run Dual-Service Deployment & VPC Networking | Complete (Verified) |
+| **Phase 7** | Cloud Build CI/CD Automation & Production Verification | Ready to Plan (`/gsd-plan-phase 7`) |
 
 ---
 
@@ -47,8 +46,11 @@
 - **ADR-08: Serverless VPC Access for Cloud SQL PostGIS Connectivity**
   - *Decision*: Connect Cloud Run services to Cloud SQL for PostgreSQL + PostGIS via a Serverless VPC Access connector using internal RFC 1918 private IPs or Unix sockets.
   - *Rationale*: Eliminates public internet database exposure, reduces latency within `asia-south1`, and secures municipal environmental records.
+- **ADR-09: Service-to-Service IAM Token Resolution via Cloud Metadata**
+  - *Decision*: Use Google instance metadata server to acquire IAM ID tokens for inter-service communication between `pratyaksha-web-service` and private `pratyaksha-geo-service`.
+  - *Rationale*: Eliminates long-lived static tokens or API keys while ensuring zero unauthorized traffic can reach internal GIS services.
 
 ---
 
 ## Immediate Next Steps
-1. Run `/gsd-plan-phase 3` to plan Phase 3 (Multi-Service Containerization & Local Compose Verification).
+1. Run `/gsd-plan-phase 7` to plan Phase 7 (Cloud Build CI/CD Automation & Production Verification).

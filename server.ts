@@ -13,6 +13,7 @@ import { mlConsensusService } from './src/server/engines/mlEngine.ts';
 import { forecastService } from './src/server/engines/forecastEngine.ts';
 import { segmentationService } from './src/server/engines/segmentationEngine.ts';
 import { reportEngine } from './src/server/engines/reportEngine.ts';
+import { getGcpIdToken } from './src/server/utils/gcpAuth.ts';
 import type {
   ForecastAlgorithm,
   ForecastHorizon,
@@ -619,13 +620,20 @@ async function startServer() {
   app.use('/api/py', async (req, res) => {
     try {
       const targetUrl = `${GEO_BACKEND_URL}/api${req.url}`;
+      let authHeader = req.headers.authorization as string | undefined;
+      if (!authHeader) {
+        const idToken = await getGcpIdToken(GEO_BACKEND_URL);
+        if (idToken) {
+          authHeader = `Bearer ${idToken}`;
+        }
+      }
       const response = await axios({
         method: req.method,
         url: targetUrl,
         data: req.body,
         headers: {
           'Content-Type': req.headers['content-type'] || 'application/json',
-          ...(req.headers.authorization ? { Authorization: req.headers.authorization } : {}),
+          ...(authHeader ? { Authorization: authHeader } : {}),
         },
         timeout: 15000,
       });
